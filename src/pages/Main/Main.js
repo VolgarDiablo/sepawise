@@ -193,7 +193,30 @@ const Main = () => {
             </div>
           </div>
 
-          <div></div>
+          <div class="grid gap-[20px] grid-cols-1">
+            <h3 class="text-[#3e3e3e] text-[16px] leading-[1.06] font-semibold">
+              Your details Tether
+            </h3>
+            <div class="flex flex-col gap-[16px]  sm:flex-row">
+              <div class="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
+                <input
+                  name="email"
+                  class="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
+                  placeholder="E-mail"
+                  type="text"
+                />
+              </div>
+
+              <div class="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
+                <input
+                  name="wallet"
+                  class="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
+                  placeholder="Tether TRC-20 address"
+                  type="text"
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="bg-blue-100 rounded-[12px] p-[20px] lg:p-[32px] shadow-custom-sidebar sticky top-8 lg:col-start-2 lg:row-start-1">
