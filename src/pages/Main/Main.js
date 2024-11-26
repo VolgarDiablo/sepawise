@@ -223,7 +223,22 @@ const Main = () => {
           Сайдбар
         </div>
 
-        <div class=" lg:row-start-4 lg:col-span-1">Content Block 5</div>
+        <div class=" lg:row-start-4 lg:col-span-1">
+          <div class="grid gap-[16px] grid-cols-1 sm:grid-cols-2">
+            <div class="bg-[#E7EEF5] rounded-[10px] px-[24px] py-[18px] leading-[1.3] h-max text-[12px] ">
+              KYC procedure in progress
+            </div>
+            <div class="grid-cols-1 gap-[16px] sm:grid-cols-2">
+              <div class="flex flex-col">
+                <label class="inline-flex items-center cursor-pointer">
+                  <span></span>
+                  <span>bfdbsfd</span>
+                </label>
+              </div>
+              <button>Proceed to payment</button>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   );
