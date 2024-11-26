@@ -6,7 +6,6 @@ import iconTehterTRC from "../../assets/images/tetherTRC.svg";
 const Main = () => {
   const [selectedButtonBlockSell, setSelectedButtonBlockSell] = useState("All");
   const [selectedButtonBlockBuy, setSelectedButtonBlockBuy] = useState("All");
-  const mySchema = z.string();
 
   const handleClickBlockSell = (button) => {
     setSelectedButtonBlockSell(button);
@@ -71,7 +70,7 @@ const Main = () => {
               <div className="opacity-100 grid grid-cols-3 gap-[4px] sm:gap-[14px] p-[10px] mt-[-10px] ml-[-10px] max-h-[450px] h-[130px] overflow-y-auto transition-height duration-300 ease-in-out sm:grid-cols-[repeat(5,1fr)] lg:h-[130px] lg:grid-cols-[repeat(6,1fr)]">
                 <div class="min-w-[100px max-w-[110px] w-auto sm:w-[120px] h-[110px] flex flex-col gap-[8px] p-[9px] justify-center items-center shadow-custom-button-currencie border-2 rounded-[8px] border-custom-tab-button-blue">
                   <div class="w-[28px] p-[2px]">
-                    <img src={iconSepa} />
+                    <img src={iconSepa} alt="SEPA" />
                   </div>
                   <h5 class="font-semibold text-[12px] leading-[1.3] text-[#3e3e3e]">
                     SEPA
@@ -137,7 +136,7 @@ const Main = () => {
               <div className="opacity-100 grid grid-cols-3 gap-[4px] sm:gap-[14px] p-[10px] mt-[-10px] ml-[-10px] max-h-[450px] h-[130px] overflow-y-auto transition-height duration-300 ease-in-out sm:grid-cols-[repeat(5,1fr)] lg:h-[130px] lg:grid-cols-[repeat(6,1fr)]">
                 <div class="min-w-[100px max-w-[110px] w-auto sm:w-[120px] h-[110px] flex flex-col gap-[8px] p-[9px] justify-center items-center shadow-custom-button-currencie border-2 rounded-[8px] border-custom-tab-button-blue">
                   <div class="w-[28px] p-[2px]">
-                    <img src={iconTehterTRC} />
+                    <img src={iconTehterTRC} alt="Tehter TRC20" />
                   </div>
                   <h5 class="font-semibold text-[12px] leading-[1.3] text-[#3e3e3e]">
                     Tether
@@ -152,10 +151,54 @@ const Main = () => {
             </div>
           </div>
 
-          <div class="bg-white p-4 rounded-2xl shadow-custom-main">Блок 3</div>
+          <div class="bg-white p-4 rounded-2xl shadow-custom-main flex flex-col gap-[32px]">
+            <h1 class="text-[#3e3e3e] text-[24px] leading-[1.3] font-semibold">
+              Payment details
+            </h1>
+            <div class="grid gap-[16px] grid-cols-1 sm:grid-cols-2">
+              <div class="flex flex-col gap-[20px]">
+                <h3 class="text-[#3e3e3e] text-[16px] leading-[1.06] font-semibold">
+                  Sale amount SEPA
+                </h3>
+                <div class="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
+                  <input
+                    name="saleAmount"
+                    class="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
+                    placeholder="0"
+                    type="text"
+                  />
+                  <div class="pr-4">
+                    <span class="text-[#b6b6b6] font-normal text-[14px]">
+                      EUR
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-[20px]">
+                <h3 class="text-[#3e3e3e] text-[16px] leading-[1.06] font-semibold">
+                  Purchase amount Tether
+                </h3>
+                <div class="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
+                  <input
+                    name="purchaseAmount"
+                    class="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
+                    placeholder="0"
+                    type="text"
+                  />
+                  <div class="pr-4">
+                    <span class="text-[#b6b6b6] font-normal text-[14px]">
+                      TRC20
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div></div>
+          </div>
         </div>
 
-        <div class="bg-blue-100 rounded-[12px] p-[20px] lg:p-[32px] shadow-custom-sidebar">
+        <div class="bg-blue-100 rounded-[12px] p-[20px] lg:p-[32px] shadow-custom-sidebar sticky top-8">
           Сайдбар
         </div>
       </main>
