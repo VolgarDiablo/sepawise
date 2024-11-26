@@ -197,7 +197,7 @@ const Main = () => {
             <h3 class="text-[#3e3e3e] text-[16px] leading-[1.06] font-semibold">
               Your details Tether
             </h3>
-            <div class="flex flex-col gap-[16px]  sm:flex-row">
+            <div class="grid gap-[16px] grid-cols-1 sm:grid-cols-2">
               <div class="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
                 <input
                   name="email"
