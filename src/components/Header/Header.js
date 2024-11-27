@@ -3,7 +3,7 @@ import React from "react";
 const Header = () => {
   return (
     <div class="flex items-center justify-center">
-      <div class="flex justify-between items-center max-w-[1200px]  w-full py-5">
+      <div class="flex justify-between items-center max-w-[1200px] mx-auto  w-full py-5">
         <div>
           <a href="/">
             <svg
