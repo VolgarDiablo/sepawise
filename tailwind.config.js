@@ -8,7 +8,7 @@ module.exports = {
       },
       colors: {
         "custom-tab-button-blue": "rgb(78, 131, 185)",
-        "custom-bg-tab-button": "rgba(78, 131, 185, 0.04);",
+        "custom-bg-tab-button": "rgba(78, 131, 185, 0.04)",
       },
       boxShadow: {
         "custom-lang":

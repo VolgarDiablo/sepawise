@@ -22,8 +22,8 @@ const Main = () => {
           <h1 class="text-[#3e3e3e] text-[24px] leading-[1.3] font-semibold">
             Want to sell
           </h1>
-          <div class="flex flex-col gap-[35px]">
-            <div class="flex flex-col gap-[20px] sm:gap-[56px]">
+          <div class="flex flex-col gap-[35px] ">
+            <div class="flex flex-col gap-[20px] sm:gap-[56px] sm:flex-row">
               <div class="flex flex-col gap-[15px]">
                 <span class="text-[#3e3e3e] text-[12px] leading-[1.4] font-medium">
                   Payment systems
@@ -89,7 +89,7 @@ const Main = () => {
             Want to buy
           </h1>
           <div class="flex flex-col gap-[35px]">
-            <div class="flex flex-col gap-[20px] sm:gap-[56px]">
+            <div class="flex flex-col gap-[20px] sm:gap-[56px] sm:flex-row">
               <div class="flex flex-col gap-[15px]">
                 <span class="text-[#3e3e3e] text-[12px] leading-[1.4] font-medium">
                   Payment systems
@@ -231,8 +231,33 @@ const Main = () => {
             <div class="grid-cols-1 gap-[16px] sm:grid-cols-2">
               <div class="flex flex-col">
                 <label class="inline-flex items-center cursor-pointer">
-                  <span></span>
-                  <span>bfdbsfd</span>
+                  <input type="checkbox" class="hidden peer" />
+
+                  <span class="mr-[10px] w-6 h-6 rounded-md border-2 border-gray-300 bg-white flex items-center justify-center peer-checked:border-blue-500 peer-checked:bg-blue-500 peer-focus:ring-2 peer-focus:ring-blue-300">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-4 h-4 text-white peer-checked:block"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M16.707 5.293a1 1 0 00-1.414 0L9 11.586l-2.293-2.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l7-7a1 1 0 000-1.414z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </span>
+
+                  <span class="font-medium text-[12px] leading-[1.48] peer-checked:text-[#4e83b9] text-[#b6b6b6]">
+                    I agree with personal data processing and accept
+                    <a
+                      href="/"
+                      class="text-[#551a8b] leading-[1.4] font-normal"
+                    >
+                      {" "}
+                      exchange terms
+                    </a>
+                  </span>
                 </label>
               </div>
               <button>Proceed to payment</button>
