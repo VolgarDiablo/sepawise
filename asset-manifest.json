@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/sepawise/static/css/main.9919ae03.css",
-    "main.js": "/sepawise/static/js/main.eb9f78b4.js",
+    "main.js": "/sepawise/static/js/main.c4f70a9d.js",
     "static/js/453.85c06005.chunk.js": "/sepawise/static/js/453.85c06005.chunk.js",
     "static/media/sepa.svg": "/sepawise/static/media/sepa.d7289e7031515b0055a88ac35cf065d7.svg",
     "static/media/tetherTRC.svg": "/sepawise/static/media/tetherTRC.b614d10901a5d886312ae4ded0dceede.svg",
     "index.html": "/sepawise/index.html",
     "main.9919ae03.css.map": "/sepawise/static/css/main.9919ae03.css.map",
-    "main.eb9f78b4.js.map": "/sepawise/static/js/main.eb9f78b4.js.map",
+    "main.c4f70a9d.js.map": "/sepawise/static/js/main.c4f70a9d.js.map",
     "453.85c06005.chunk.js.map": "/sepawise/static/js/453.85c06005.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9919ae03.css",
-    "static/js/main.eb9f78b4.js"
+    "static/js/main.c4f70a9d.js"
   ]
 }
