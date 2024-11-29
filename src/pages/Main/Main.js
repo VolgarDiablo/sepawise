@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { z } from "zod";
 import iconSepa from "../../assets/images/sepa.svg";
 import iconTehterTRC from "../../assets/images/tetherTRC.svg";
+import { NavLink } from "react-router-dom";
 
 const schema = z.object({
   email: z.string().email("Wrong e-mail format").min(1, "Enter email"),
@@ -54,19 +55,19 @@ const Main = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div class="flex items-center justify-center pt-[16px] pb-[32px]">
-        <main class="grid gap-[30px] max-w-[1200px] w-full grid-cols-1 lg:grid-cols-[1fr_370px] items-start">
-          <div class="bg-white p-4 rounded-2xl shadow-custom-main flex flex-col gap-[24px] lg:row-start-1 lg:col-start-1 md:p-8">
-            <h1 class="text-[#3e3e3e] text-[24px] leading-[1.3] font-semibold">
+      <div className="flex items-center justify-center pt-[16px] pb-[32px]">
+        <main className="grid gap-[30px] max-w-[1200px] w-full grid-cols-1 lg:grid-cols-[1fr_370px] items-start">
+          <div className="bg-white p-4 rounded-2xl shadow-custom-main flex flex-col gap-[24px] lg:row-start-1 lg:col-start-1 md:p-8">
+            <h1 className="text-[#3e3e3e] text-[24px] leading-[1.3] font-semibold">
               Want to sell
             </h1>
-            <div class="flex flex-col gap-[35px] ">
-              <div class="flex flex-col gap-[20px] sm:gap-[56px] sm:flex-row">
-                <div class="flex flex-col gap-[15px]">
-                  <span class="text-[#3e3e3e] text-[12px] leading-[1.4] font-medium">
+            <div className="flex flex-col gap-[35px] ">
+              <div className="flex flex-col gap-[20px] sm:gap-[56px] sm:flex-row">
+                <div className="flex flex-col gap-[15px]">
+                  <span className="text-[#3e3e3e] text-[12px] leading-[1.4] font-medium">
                     Payment systems
                   </span>
-                  <div class="grid gap-[4px] grid-cols-[repeat(4,74px)] sm:gap-[8px]">
+                  <div className="grid gap-[4px] grid-cols-[repeat(4,74px)] sm:gap-[8px]">
                     <button
                       onClick={() => handleClickBlockSell("All")}
                       className={`rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab
@@ -93,28 +94,28 @@ const Main = () => {
                     </button>
                   </div>
                 </div>
-                <div class="flex flex-col gap-[15px]">
-                  <span class="text-[#3e3e3e] text-[12px] leading-[1.4] font-medium">
+                <div className="flex flex-col gap-[15px]">
+                  <span className="text-[#3e3e3e] text-[12px] leading-[1.4] font-medium">
                     Currencies
                   </span>
-                  {/* <div class="grid gap-[4px] grid-cols-[repeat(4,74px)] sm:gap-[8px]"> */}
-                  <div class="grid gap-[4px] grid-cols-[repeat(1,74px)] sm:gap-[8px]">
-                    <button class="rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab bg-white border-custom-tab-button-blue border-2 text-custom-tab-button-blue">
+                  {/* <div className="grid gap-[4px] grid-cols-[repeat(4,74px)] sm:gap-[8px]"> */}
+                  <div className="grid gap-[4px] grid-cols-[repeat(1,74px)] sm:gap-[8px]">
+                    <button className="rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab bg-white border-custom-tab-button-blue border-2 text-custom-tab-button-blue">
                       EUR
                     </button>
                   </div>
                 </div>
               </div>
               <div className="opacity-100 grid grid-cols-3 gap-[4px] sm:gap-[14px] p-[10px] mt-[-10px] ml-[-10px] max-h-[450px] h-[130px] overflow-y-auto transition-height duration-300 ease-in-out sm:grid-cols-[repeat(5,1fr)] lg:h-[130px] lg:grid-cols-[repeat(6,1fr)]">
-                <div class="min-w-[100px max-w-[110px] w-auto sm:w-[120px] h-[110px] flex flex-col gap-[8px] p-[9px] justify-center items-center shadow-custom-button-currencie border-2 rounded-[8px] border-custom-tab-button-blue">
-                  <div class="w-[28px] p-[2px]">
+                <div className="min-w-[100px max-w-[110px] w-auto sm:w-[120px] h-[110px] flex flex-col gap-[8px] p-[9px] justify-center items-center shadow-custom-button-currencie border-2 rounded-[8px] border-custom-tab-button-blue">
+                  <div className="w-[28px] p-[2px]">
                     <img src={iconSepa} alt="SEPA" />
                   </div>
-                  <h5 class="font-semibold text-[12px] leading-[1.3] text-[#3e3e3e]">
+                  <h5 className="font-semibold text-[12px] leading-[1.3] text-[#3e3e3e]">
                     SEPA
                   </h5>
-                  <div class="flex flex-wrap gap-[3px] justify-center">
-                    <h5 class="font-semibold text-[12px] leading-[1.3] text-[#3e83b9]">
+                  <div className="flex flex-wrap gap-[3px] justify-center">
+                    <h5 className="font-semibold text-[12px] leading-[1.3] text-[#3e83b9]">
                       EUR
                     </h5>
                   </div>
@@ -123,17 +124,17 @@ const Main = () => {
             </div>
           </div>
 
-          <div class="bg-white p-4 rounded-2xl shadow-custom-main flex flex-col gap-[24px] lg:row-start-2 lg:col-start-1  md:p-8">
-            <h1 class="text-[#3e3e3e] text-[24px] leading-[1.3] font-semibold">
+          <div className="bg-white p-4 rounded-2xl shadow-custom-main flex flex-col gap-[24px] lg:row-start-2 lg:col-start-1  md:p-8">
+            <h1 className="text-[#3e3e3e] text-[24px] leading-[1.3] font-semibold">
               Want to buy
             </h1>
-            <div class="flex flex-col gap-[35px]">
-              <div class="flex flex-col gap-[20px] sm:gap-[56px] sm:flex-row">
-                <div class="flex flex-col gap-[15px]">
-                  <span class="text-[#3e3e3e] text-[12px] leading-[1.4] font-medium">
+            <div className="flex flex-col gap-[35px]">
+              <div className="flex flex-col gap-[20px] sm:gap-[56px] sm:flex-row">
+                <div className="flex flex-col gap-[15px]">
+                  <span className="text-[#3e3e3e] text-[12px] leading-[1.4] font-medium">
                     Payment systems
                   </span>
-                  <div class="grid gap-[4px] grid-cols-[repeat(4,74px)] sm:gap-[8px]">
+                  <div className="grid gap-[4px] grid-cols-[repeat(4,74px)] sm:gap-[8px]">
                     <button
                       onClick={() => handleClickBlockBuy("All")}
                       className={`rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium  shadow-custom-button-tab
@@ -160,28 +161,28 @@ const Main = () => {
                     </button>
                   </div>
                 </div>
-                <div class="flex flex-col gap-[15px]">
-                  <span class="text-[#3e3e3e] text-[12px] leading-[1.4] font-medium">
+                <div className="flex flex-col gap-[15px]">
+                  <span className="text-[#3e3e3e] text-[12px] leading-[1.4] font-medium">
                     Currencies
                   </span>
-                  {/* <div class="grid gap-[4px] grid-cols-[repeat(4,74px)] sm:gap-[8px]"> */}
-                  <div class="grid gap-[4px] grid-cols-[repeat(1,74px)] sm:gap-[8px]">
-                    <button class="rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab bg-white border-custom-tab-button-blue border-2 text-custom-tab-button-blue">
+                  {/* <div className="grid gap-[4px] grid-cols-[repeat(4,74px)] sm:gap-[8px]"> */}
+                  <div className="grid gap-[4px] grid-cols-[repeat(1,74px)] sm:gap-[8px]">
+                    <button className="rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab bg-white border-custom-tab-button-blue border-2 text-custom-tab-button-blue">
                       TRC20
                     </button>
                   </div>
                 </div>
               </div>
               <div className="opacity-100 grid grid-cols-3 gap-[4px] sm:gap-[14px] p-[10px] mt-[-10px] ml-[-10px] max-h-[450px] h-[130px] overflow-y-auto transition-height duration-300 ease-in-out sm:grid-cols-[repeat(5,1fr)] lg:h-[130px] lg:grid-cols-[repeat(6,1fr)]">
-                <div class="min-w-[100px max-w-[110px] w-auto sm:w-[120px] h-[110px] flex flex-col gap-[8px] p-[9px] justify-center items-center shadow-custom-button-currencie border-2 rounded-[8px] border-custom-tab-button-blue">
-                  <div class="w-[28px] p-[2px]">
+                <div className="min-w-[100px max-w-[110px] w-auto sm:w-[120px] h-[110px] flex flex-col gap-[8px] p-[9px] justify-center items-center shadow-custom-button-currencie border-2 rounded-[8px] border-custom-tab-button-blue">
+                  <div className="w-[28px] p-[2px]">
                     <img src={iconTehterTRC} alt="Tehter TRC20" />
                   </div>
-                  <h5 class="font-semibold text-[12px] leading-[1.3] text-[#3e3e3e]">
+                  <h5 className="font-semibold text-[12px] leading-[1.3] text-[#3e3e3e]">
                     Tether
                   </h5>
-                  <div class="flex flex-wrap gap-[3px] justify-center">
-                    <h5 class="font-semibold text-[12px] leading-[1.3] text-[#3e83b9]">
+                  <div className="flex flex-wrap gap-[3px] justify-center">
+                    <h5 className="font-semibold text-[12px] leading-[1.3] text-[#3e83b9]">
                       TRC20
                     </h5>
                   </div>
@@ -190,42 +191,42 @@ const Main = () => {
             </div>
           </div>
 
-          <div class="bg-white p-4 rounded-2xl shadow-custom-main flex flex-col gap-[32px] lg:row-start-3 lg:col-start-1  md:p-8">
-            <h1 class="text-[#3e3e3e] text-[24px] leading-[1.3] font-semibold">
+          <div className="bg-white p-4 rounded-2xl shadow-custom-main flex flex-col gap-[32px] lg:row-start-3 lg:col-start-1  md:p-8">
+            <h1 className="text-[#3e3e3e] text-[24px] leading-[1.3] font-semibold">
               Payment details
             </h1>
-            <div class="grid gap-[16px] grid-cols-1 sm:grid-cols-2">
-              <div class="flex flex-col gap-[20px]">
-                <h3 class="text-[#3e3e3e] text-[16px] leading-[1.06] font-semibold">
+            <div className="grid gap-[16px] grid-cols-1 sm:grid-cols-2">
+              <div className="flex flex-col gap-[20px]">
+                <h3 className="text-[#3e3e3e] text-[16px] leading-[1.06] font-semibold">
                   Sale amount SEPA
                 </h3>
-                <div class="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
+                <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
                   <input
                     name="saleAmount"
-                    class="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
+                    className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
                     placeholder="0"
                     type="text"
                   />
-                  <div class="pr-4">
-                    <span class="text-[#b6b6b6] font-normal text-[14px]">
+                  <div className="pr-4">
+                    <span className="text-[#b6b6b6] font-normal text-[14px]">
                       EUR
                     </span>
                   </div>
                 </div>
               </div>
-              <div class="flex flex-col gap-[20px]">
-                <h3 class="text-[#3e3e3e] text-[16px] leading-[1.06] font-semibold">
+              <div className="flex flex-col gap-[20px]">
+                <h3 className="text-[#3e3e3e] text-[16px] leading-[1.06] font-semibold">
                   Purchase amount Tether
                 </h3>
-                <div class="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
+                <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
                   <input
                     name="purchaseAmount"
-                    class="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
+                    className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
                     placeholder="0"
                     type="text"
                   />
-                  <div class="pr-4">
-                    <span class="text-[#b6b6b6] font-normal text-[14px]">
+                  <div className="pr-4">
+                    <span className="text-[#b6b6b6] font-normal text-[14px]">
                       TRC20
                     </span>
                   </div>
@@ -233,59 +234,68 @@ const Main = () => {
               </div>
             </div>
 
-            <div class="grid gap-[20px] grid-cols-1">
-              <h3 class="text-[#3e3e3e] text-[16px] leading-[1.06] font-semibold">
+            <div className="grid gap-[20px] grid-cols-1">
+              <h3 className="text-[#3e3e3e] text-[16px] leading-[1.06] font-semibold">
                 Your details Tether
               </h3>
-              <div class="grid gap-[16px] grid-cols-1 sm:grid-cols-2">
-                <div class="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
-                  <input
-                    name="email"
-                    class="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
-                    placeholder="E-mail"
-                    type="text"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                </div>{" "}
-                {errors.email && (
-                  <p className="text-red-500 text-sm">{errors.email}</p>
-                )}
-                <div class="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
-                  <input
-                    name="wallet"
-                    class="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
-                    placeholder="Tether TRC-20 address"
-                    type="text"
-                    value={formData.wallet}
-                    onChange={handleChange}
-                  />
+              <div className="grid gap-[16px] grid-cols-1 sm:grid-cols-2">
+                <div className="flex flex-col">
+                  <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
+                    <input
+                      name="email"
+                      className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
+                      placeholder="E-mail"
+                      type="text"
+                      value={formData.email}
+                      onChange={handleChange}
+                    />
+                  </div>{" "}
+                  {errors.email && (
+                    <p className="text-[#b9634e] leading-[1.4] text-[12px] font-medium pt-1">
+                      {errors.email}
+                    </p>
+                  )}
                 </div>
-                {errors.wallet && (
-                  <p className="text-red-500 text-sm">{errors.wallet}</p>
-                )}
+
+                <div className="flex flex-col">
+                  <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
+                    <input
+                      name="wallet"
+                      className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
+                      placeholder="Tether TRC-20 address"
+                      type="text"
+                      value={formData.wallet}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  {errors.wallet && (
+                    <p className="text-[#b9634e] leading-[1.4] text-[12px] font-medium pt-1">
+                      {errors.wallet}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="bg-blue-100 rounded-[12px] p-[20px] lg:p-[32px] shadow-custom-sidebar sticky top-8 lg:col-start-2 lg:row-start-1">
+          <div className="bg-[#4e83b9] text-[#fdfdfb] rounded-[12px] p-[20px] lg:p-[32px] shadow-custom-sidebar sticky top-8 lg:col-start-2 lg:row-start-1">
             Сайдбар
           </div>
 
-          <div class=" lg:row-start-4 lg:col-span-1">
-            <div class="grid gap-[16px] grid-cols-1 sm:grid-cols-2">
-              <div class="bg-[#E7EEF5] rounded-[10px] px-[24px] py-[18px] leading-[1.3] h-max text-[12px] ">
+          <div className=" lg:row-start-4 lg:col-span-1">
+            <div className="grid gap-[16px] grid-cols-1 sm:grid-cols-2">
+              <div className="bg-[#E7EEF5] rounded-[10px] px-[24px] py-[18px] leading-[1.3] h-max text-[12px] ">
                 KYC procedure in progress
               </div>
-              <div class="grid-cols-1 gap-[16px] sm:grid-cols-2">
-                <div class="flex flex-col gap-2">
-                  <label class="inline-flex items-center cursor-pointer">
-                    <input type="checkbox" class="hidden peer" />
+              <div className="grid-cols-1 gap-[16px] sm:grid-cols-2">
+                <div className="flex flex-col gap-2">
+                  <label className="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="hidden peer" />
 
-                    <span class="mr-[10px] w-5 h-5 rounded-md border-2 border-gray-300 bg-white flex items-center justify-center peer-checked:border-blue-500 peer-checked:bg-blue-500 peer-focus:ring-2 peer-focus:ring-blue-300">
+                    <span className="mr-[10px] w-5 h-5 rounded-md border-2 border-gray-300 bg-white flex items-center justify-center peer-checked:border-blue-500 peer-checked:bg-blue-500 peer-focus:ring-2 peer-focus:ring-blue-300">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        class="w-4 h-4 text-white peer-checked:block"
+                        className="w-4 h-4 text-white peer-checked:block"
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >
@@ -297,24 +307,25 @@ const Main = () => {
                       </svg>
                     </span>
 
-                    <span class="font-medium text-[12px] leading-[1.48] peer-checked:text-[#4e83b9] text-[#b6b6b6]">
+                    <span className="font-medium text-[12px] leading-[1.48] peer-checked:text-[#4e83b9] text-[#b6b6b6]">
                       I agree with personal data processing and accept
-                      <a
-                        href="/"
-                        class="text-[#551a8b] leading-[1.4] font-normal"
+                      <NavLink
+                        to="/"
+                        target="_blank"
+                        className="text-[#551a8b] leading-[1.4] font-normal"
                       >
                         {" "}
                         exchange terms
-                      </a>
+                      </NavLink>
                     </span>
                   </label>
-                  <label class="inline-flex items-center cursor-pointer">
-                    <input type="checkbox" class="hidden peer" />
+                  <label className="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="hidden peer" />
 
-                    <span class="mr-[10px] w-5 h-5 rounded-md border-2 border-gray-300 bg-white flex items-center justify-center peer-checked:border-blue-500 peer-checked:bg-blue-500 peer-focus:ring-2 peer-focus:ring-blue-300">
+                    <span className="mr-[10px] w-5 h-5 rounded-md border-2 border-gray-300 bg-white flex items-center justify-center peer-checked:border-blue-500 peer-checked:bg-blue-500 peer-focus:ring-2 peer-focus:ring-blue-300">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        class="w-4 h-4 text-white peer-checked:block"
+                        className="w-4 h-4 text-white peer-checked:block"
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >
@@ -326,15 +337,16 @@ const Main = () => {
                       </svg>
                     </span>
 
-                    <span class="font-medium text-[12px] leading-[1.48] peer-checked:text-[#4e83b9] text-[#b6b6b6]">
+                    <span className="font-medium text-[12px] leading-[1.48] peer-checked:text-[#4e83b9] text-[#b6b6b6]">
                       I agree with
-                      <a
-                        href="/"
-                        class="text-[#551a8b] leading-[1.4] font-normal"
+                      <NavLink
+                        to="/"
+                        target="_blank"
+                        className="text-[#551a8b] leading-[1.4] font-normal"
                       >
                         {" "}
                         the KYC and AML procedure
-                      </a>
+                      </NavLink>
                     </span>
                   </label>
                 </div>

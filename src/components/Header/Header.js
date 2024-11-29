@@ -1,13 +1,14 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 const Header = () => {
   return (
-    <div class="flex items-center justify-center">
-      <div class="flex justify-between items-center max-w-[1200px] mx-auto  w-full py-5">
+    <div className="flex items-center justify-center">
+      <div className="flex justify-between items-center max-w-[1200px] mx-auto  w-full py-5">
         <div>
-          <a href="/">
+          <NavLink to="/">
             <svg
-              class="jss6"
+              className="jss6"
               width="58"
               height="20"
               viewBox="0 0 58 20"
@@ -23,17 +24,17 @@ const Header = () => {
                 fill="#4E83B9"
               ></path>
             </svg>
-          </a>
+          </NavLink>
         </div>
-        <div class="flex items-center gap-[16px]">
-          <a
-            href="/"
-            class="bg-[#E2EDF9] text-[#3e3e3e] font-semibold leading-[1.4] px-4 py-[6px] text-[12px] text-center rounded-[8px] flex items-center justify-center w-[100px] h-[44px]"
+        <div className="flex items-center gap-[16px]">
+          <NavLink
+            to="/rules/aml"
+            className="bg-[#E2EDF9] text-[#3e3e3e] font-semibold leading-[1.4] px-4 py-[6px] text-[12px] text-center rounded-[8px] flex items-center justify-center w-[100px] h-[44px]"
           >
             AML/KYC
-          </a>
+          </NavLink>
 
-          <button class="w-[42px] h-[42px] flex items-center justify-center bg-white rounded-full">
+          <button className="w-[42px] h-[42px] flex items-center justify-center bg-white rounded-full">
             <svg
               width="20"
               height="26"
@@ -61,7 +62,7 @@ const Header = () => {
             </svg>
           </button>
 
-          <div class="bg-white px-[10px] h-[32px] w-[60px] font-semibold text-xs flex items-center justify-center gap-[2px] rounded-lg shadow-custom-lang">
+          <div className="bg-white px-[10px] h-[32px] w-[60px] font-semibold text-xs flex items-center justify-center gap-[2px] rounded-lg shadow-custom-lang">
             EN{" "}
             {/* <svg
               width="20"
