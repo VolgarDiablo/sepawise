@@ -7,12 +7,12 @@ import NotFound from "../../pages/NotFound/NotFound";
 const Content = () => {
   return (
     <div>
-      <ErrorBoundary>
-        <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </ErrorBoundary>
+      {/* <ErrorBoundary> */}
+      <Routes>
+        <Route path="*" element={<Main />} />
+        {/* <Route path="*" element={<NotFound />} /> */}
+      </Routes>
+      {/* </ErrorBoundary> */}
     </div>
   );
 };
