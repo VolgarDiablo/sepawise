@@ -2,7 +2,6 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import ErrorBoundary from "../../ErrorBoundary";
 import Main from "../../pages/Main/Main";
-import Aml from "../../pages/Rules/AML/Aml";
 import NotFound from "../../pages/NotFound/NotFound";
 
 const Content = () => {
@@ -11,7 +10,6 @@ const Content = () => {
       <ErrorBoundary>
         <Routes>
           <Route path="/" element={<Main />} />
-          <Route path="/rules/aml" element={<Aml />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </ErrorBoundary>

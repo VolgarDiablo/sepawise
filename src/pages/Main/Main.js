@@ -34,17 +34,21 @@ const Main = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+
+    // Очистка ошибки для текущего поля при изменении
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: undefined,
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
-      // Проверяем данные с помощью схемы Zod
       schema.parse(formData);
       alert("Form submitted successfully!");
       setErrors({});
     } catch (err) {
-      // Если есть ошибки, сохраняем их в state
       const newErrors = {};
       err.errors.forEach((error) => {
         newErrors[error.path[0]] = error.message;
@@ -52,6 +56,40 @@ const Main = () => {
       setErrors(newErrors);
     }
   };
+
+  const handleBlur = (e) => {
+    const { name } = e.target;
+    try {
+      schema.pick({ [name]: true }).parse({ [name]: formData[name] });
+      // Если валидация успешна, очищаем ошибку
+      setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+    } catch (err) {
+      // Если есть ошибки, извлекаем их корректно
+      const firstError = err.errors.find((error) => error.path[0] === name);
+      if (firstError) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: firstError.message,
+        }));
+      }
+    }
+  };
+
+  const [checkboxState, setCheckboxState] = useState({
+    checkboxTerms: false,
+    checkboxAml: false,
+  });
+
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setCheckboxState((prevState) => ({
+      ...prevState,
+      [name]: checked,
+    }));
+  };
+
+  const isBothChecked =
+    checkboxState.checkboxTerms && checkboxState.checkboxAml;
 
   return (
     <form onSubmit={handleSubmit}>
@@ -248,6 +286,7 @@ const Main = () => {
                       type="text"
                       value={formData.email}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                     />
                   </div>{" "}
                   {errors.email && (
@@ -266,6 +305,7 @@ const Main = () => {
                       type="text"
                       value={formData.wallet}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                     />
                   </div>
                   {errors.wallet && (
@@ -283,66 +323,105 @@ const Main = () => {
           </div>
 
           <div className=" lg:row-start-4 lg:col-span-1">
-            <div className="grid gap-[16px] grid-cols-1 sm:grid-cols-2">
+            <div className="grid gap-[16px] grid-cols-1 sm:grid-cols-[1fr_minmax(200px,_280px)]">
               <div className="bg-[#E7EEF5] rounded-[10px] px-[24px] py-[18px] leading-[1.3] h-max text-[12px] ">
                 KYC procedure in progress
               </div>
-              <div className="grid-cols-1 gap-[16px] sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-[16px]">
                 <div className="flex flex-col gap-2">
+                  {/* Первый чекбокс */}
                   <label className="inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="hidden peer" />
-
-                    <span className="mr-[10px] w-5 h-5 rounded-md border-2 border-gray-300 bg-white flex items-center justify-center peer-checked:border-blue-500 peer-checked:bg-blue-500 peer-focus:ring-2 peer-focus:ring-blue-300">
+                    <input
+                      type="checkbox"
+                      name="checkboxTerms"
+                      className="hidden peer"
+                      onChange={handleCheckboxChange}
+                    />
+                    <span
+                      className={`mr-[10px] w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-[250ms] ${
+                        checkboxState.checkboxTerms
+                          ? "border-[#4E83B9]"
+                          : "border-gray-300"
+                      }`}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="w-4 h-4 text-white peer-checked:block"
+                        className={`w-4 h-4 transition-opacity duration-200 fill-[#4E83B9] ${
+                          checkboxState.checkboxTerms
+                            ? "opacity-100"
+                            : "opacity-0"
+                        }`}
                         viewBox="0 0 20 20"
-                        fill="currentColor"
                       >
                         <path
-                          fill-rule="evenodd"
-                          d="M16.707 5.293a1 1 0 00-1.414 0L9 11.586l-2.293-2.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l7-7a1 1 0 000-1.414z"
-                          clip-rule="evenodd"
-                        />
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 00-1.414 0L9 11.586l-2.293-2.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l7-7a 1 1 0 000-1.414z"
+                          clipRule="evenodd"
+                        ></path>
                       </svg>
                     </span>
-
-                    <span className="font-medium text-[12px] leading-[1.48] peer-checked:text-[#4e83b9] text-[#b6b6b6]">
+                    <span
+                      className={`font-medium text-[12px] leading-[1.4] transition-colors duration-200 ${
+                        checkboxState.checkboxTerms
+                          ? "text-[#4e83b9]"
+                          : "text-[#b6b6b6]"
+                      }`}
+                    >
                       I agree with personal data processing and accept
                       <NavLink
                         to="/"
                         target="_blank"
-                        className="text-[#551a8b] leading-[1.4] font-normal"
+                        className="text-[#551a8b] font-normal"
                       >
                         {" "}
                         exchange terms
                       </NavLink>
                     </span>
                   </label>
-                  <label className="inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="hidden peer" />
 
-                    <span className="mr-[10px] w-5 h-5 rounded-md border-2 border-gray-300 bg-white flex items-center justify-center peer-checked:border-blue-500 peer-checked:bg-blue-500 peer-focus:ring-2 peer-focus:ring-blue-300">
+                  {/* Второй чекбокс */}
+                  <label className="inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="checkboxAml"
+                      className="hidden peer"
+                      onChange={handleCheckboxChange}
+                    />
+                    <span
+                      className={`mr-[10px] w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-[250ms] ${
+                        checkboxState.checkboxAml
+                          ? "border-[#4E83B9]"
+                          : "border-gray-300"
+                      }`}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="w-4 h-4 text-white peer-checked:block"
+                        className={`w-4 h-4 transition-opacity duration-200 fill-[#4E83B9] ${
+                          checkboxState.checkboxAml
+                            ? "opacity-100"
+                            : "opacity-0"
+                        }`}
                         viewBox="0 0 20 20"
-                        fill="currentColor"
                       >
                         <path
-                          fill-rule="evenodd"
+                          fillRule="evenodd"
                           d="M16.707 5.293a1 1 0 00-1.414 0L9 11.586l-2.293-2.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l7-7a1 1 0 000-1.414z"
-                          clip-rule="evenodd"
+                          clipRule="evenodd"
                         />
                       </svg>
                     </span>
-
-                    <span className="font-medium text-[12px] leading-[1.48] peer-checked:text-[#4e83b9] text-[#b6b6b6]">
+                    <span
+                      className={`font-medium text-[12px] leading-[1.4] transition-colors duration-200 ${
+                        checkboxState.checkboxAml
+                          ? "text-[#4e83b9]"
+                          : "text-[#b6b6b6]"
+                      }`}
+                    >
                       I agree with
                       <NavLink
                         to="/"
                         target="_blank"
-                        className="text-[#551a8b] leading-[1.4] font-normal"
+                        className="text-[#551a8b] font-normal"
                       >
                         {" "}
                         the KYC and AML procedure
@@ -350,7 +429,19 @@ const Main = () => {
                     </span>
                   </label>
                 </div>
-                <button type="submit">Proceed to payment</button>
+
+                {/* Кнопка */}
+                <button
+                  type="submit"
+                  disabled={!isBothChecked}
+                  className={`text-[12px] font-semibold leading-[1.4] h-[64px] py-3 px-5 rounded-lg uppercase transition-colors duration-[250ms] ${
+                    isBothChecked
+                      ? "bg-[#4E83B9] text-[#FBFBFD]"
+                      : "bg-[#E0E0E0] text-[#00000042]"
+                  }`}
+                >
+                  Proceed to payment
+                </button>
               </div>
             </div>
           </div>
