@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import bestchange from "../../assets/images/bestchange.png";
+import useModal from "../../hooks/useModall";
 import CopiedNotification from "../../components/Notification/Copied/CopiedNotification";
+import ModalTerms from "../../components/Modal/Terms/Terms";
 
 const Footer = () => {
   const [isCopiedVisible, setIsCopiedVisible] = useState(false);
+  const { isModalVisible, openModal, closeModal } = useModal();
 
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -25,13 +28,16 @@ const Footer = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-center">
-        <div className=" flex justify-between items-start max-w-[1200px] mx-auto  w-full py-5 gap-4 pt-8 pb-8 flex-col-reverse pl-4 pr-4">
+      <div className="flex items-center justify-center ">
+        <div className="flex justify-between items-start max-w-[1200px] mx-auto w-full py-5 gap-4 pt-8 pb-8 flex-col-reverse pl-4 pr-4 sm:flex-row">
+          <div
+            className="font-normal text-[12px] leading-[1.6] text-[#b6b6b6] cursor-pointer"
+            onClick={openModal}
+          >
+            Terms of Exchange
+          </div>
           <div>
             <img src={bestchange} alt="BestChange" />
-          </div>
-          <div className="font-normal text-[12px] leading-[1.6] text-[#b6b6b6]">
-            Terms of Exchange
           </div>
           <div className="cursor-pointer" onClick={handleOpenTelegram}>
             <svg
@@ -49,7 +55,7 @@ const Footer = () => {
               ></path>
             </svg>
           </div>
-          <div className="flex flex-row gap-10">
+          <div className="flex flex-row gap-10 justify-between">
             <div>
               <p className="font-normal text-[12px] leading-[1.6] text-[#b6b6b6]">
                 Support
@@ -58,7 +64,7 @@ const Footer = () => {
                 className="font-bold text-[12px] leading-[1.2] cursor-pointer text-[#5a5a5a]"
                 onClick={(e) => handleCopy(e.target.innerText)}
               >
-                support@
+                support@sepawise
               </span>
             </div>
             <div>
@@ -69,13 +75,14 @@ const Footer = () => {
                 className="font-bold text-[12px] leading-[1.2] cursor-pointer text-[#5a5a5a]"
                 onClick={(e) => handleCopy(e.target.innerText)}
               >
-                partner@
+                partner@sepawise
               </span>
             </div>
           </div>
         </div>
       </div>
       <CopiedNotification isVisible={isCopiedVisible} />
+      <ModalTerms isVisible={isModalVisible} onClose={closeModal} />
     </div>
   );
 };

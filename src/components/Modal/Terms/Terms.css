@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .list-decimal-nested {
+    list-style: none;
+    counter-reset: level1; /* Инициализация для верхнего уровня */
+  }
+  .list-decimal-nested > li {
+    counter-increment: level1;
+    position: relative;
+    padding-left: 1rem;
+    margin: 14px auto;
+  }
+  .list-decimal-nested > li > ul > li {
+    list-style: disc;
+    position: relative;
+    padding-left: 1rem;
+    margin: 0 auto;
+  }
+  .list-decimal-nested > li::before {
+    content: counter(level1) ". ";
+    position: absolute;
+    left: 0;
+  }
+  .list-decimal-nested > li > .list-decimal-nested {
+    counter-reset: level2; /* Сброс счетчика для вложенного уровня */
+  }
+  .list-decimal-nested > li > .list-decimal-nested > li {
+    counter-increment: level2;
+    position: relative;
+    padding-left: 2rem;
+  }
+  .list-decimal-nested > li > .list-decimal-nested > li::before {
+    content: counter(level1) "." counter(level2);
+    position: absolute;
+    left: 0;
+  }
+}
