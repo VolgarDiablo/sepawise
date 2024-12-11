@@ -10,6 +10,13 @@ const schema = z.object({
     .string()
     .regex(/^T[0-9A-HJ-NP-Za-km-z]{33}$/, "Wrong Tether TRC-20 address format")
     .min(1, "You must fill in this field"),
+  tgUsername: z
+    .string()
+    .regex(
+      /^@(?!(?:.*__|_$))[a-zA-Z0-9](?:[a-zA-Z0-9_]{3,30}[a-zA-Z0-9])?$/,
+      "Wrong @username"
+    )
+    .min(2, "Enter your @username"),
 });
 
 const Main = () => {
@@ -26,6 +33,7 @@ const Main = () => {
 
   const [formData, setFormData] = useState({
     email: "",
+    tgUsername: "",
     wallet: "",
   });
 
@@ -35,25 +43,53 @@ const Main = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
-    // Очистка ошибки для текущего поля при изменении
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: undefined,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       schema.parse(formData);
-      alert("Form submitted successfully!");
       setErrors({});
-    } catch (err) {
-      const newErrors = {};
-      err.errors.forEach((error) => {
-        newErrors[error.path[0]] = error.message;
+
+      console.log("Отправляемые данные:", JSON.stringify(formData));
+
+      const response = await fetch("http://localhost:5000/send-to-telegram", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+        body: JSON.stringify(formData),
       });
-      setErrors(newErrors);
+
+      const result = await response.json();
+
+      console.log("HTTP-статус ответа:", response.status);
+      console.log("Ответ сервера:", result);
+
+      if (!response.ok) {
+        throw new Error(result.error || "Ошибка запроса");
+      }
+
+      setFormData({
+        email: "",
+        tgUsername: "",
+        wallet: "",
+      });
+    } catch (err) {
+      if (err.errors) {
+        const newErrors = {};
+        err.errors.forEach((error) => {
+          newErrors[error.path[0]] = error.message;
+        });
+        setErrors(newErrors);
+      } else {
+        console.log("Произошла ошибка при отправке данных.");
+      }
     }
   };
 
@@ -92,7 +128,7 @@ const Main = () => {
     checkboxState.checkboxTerms && checkboxState.checkboxAml;
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={isBothChecked ? handleSubmit : (e) => e.preventDefault()}>
       <div className="flex items-center justify-center pt-[16px] pb-[32px]">
         <main className="grid gap-[30px] max-w-[1200px] w-full grid-cols-1 lg:grid-cols-[1fr_370px] items-start">
           <div className="bg-white p-4 rounded-2xl shadow-custom-main flex flex-col gap-[24px] lg:row-start-1 lg:col-start-1 md:p-8">
@@ -107,6 +143,7 @@ const Main = () => {
                   </span>
                   <div className="grid gap-[4px] grid-cols-[repeat(4,74px)] sm:gap-[8px]">
                     <button
+                      type="button"
                       onClick={() => handleClickBlockSell("All")}
                       className={`rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab
                           ${
@@ -119,6 +156,7 @@ const Main = () => {
                       All
                     </button>
                     <button
+                      type="button"
                       onClick={() => handleClickBlockSell("Banks")}
                       className={`rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab
                           ${
@@ -174,6 +212,7 @@ const Main = () => {
                   </span>
                   <div className="grid gap-[4px] grid-cols-[repeat(4,74px)] sm:gap-[8px]">
                     <button
+                      type="button"
                       onClick={() => handleClickBlockBuy("All")}
                       className={`rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium  shadow-custom-button-tab
                           ${
@@ -186,6 +225,7 @@ const Main = () => {
                       All
                     </button>
                     <button
+                      type="button"
                       onClick={() => handleClickBlockBuy("Crypto")}
                       className={`rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab
                           ${
@@ -292,6 +332,25 @@ const Main = () => {
                   {errors.email && (
                     <p className="text-[#b9634e] leading-[1.4] text-[12px] font-medium pt-1">
                       {errors.email}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex flex-col">
+                  <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
+                    <input
+                      name="tgUsername"
+                      className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
+                      placeholder="Enter your Tg @username"
+                      type="text"
+                      value={formData.tgUsername}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                  </div>
+                  {errors.tgUsername && (
+                    <p className="text-[#b9634e] leading-[1.4] text-[12px] font-medium pt-1">
+                      {errors.tgUsername}
                     </p>
                   )}
                 </div>

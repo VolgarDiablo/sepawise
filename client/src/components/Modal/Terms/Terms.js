@@ -66,9 +66,9 @@ const Terms = ({ isVisible, onClose }) => {
               Before using the SepaWise service, the User must read the Terms
               and Conditions of the SepaWise service in their entirety. Using
               the SepaWise service is possible only if the User accepts all the
-              terms of the agreement. You may not use the SepaWise service and
-              create an Account unless you have read, understood and accepted
-              all the provisions of these Terms and Conditions.
+              terms of the agreement. You may not use the SepaWise service
+              unless you have read, understood and accepted all the provisions
+              of these Terms and Conditions.
             </p>
             <ol className="list-decimal-nested">
               <li>
@@ -105,12 +105,6 @@ const Terms = ({ isVisible, onClose }) => {
                     such parties and which are performed exclusively on the
                     Site. In any case, the Exchange shall not be deemed or
                     construed as a marginal agreement.
-                  </li>
-                  <li>
-                    "User Account (also "Account")" means the set of secure
-                    pages created as a result of the User's registration,
-                    through which the User is able to conduct transactions and
-                    keep records of its activity on the Website (Addendum).
                   </li>
                   <li>Exchange rate means a value ratio of two currencies.</li>
                   <li>
