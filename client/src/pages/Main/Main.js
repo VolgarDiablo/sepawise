@@ -32,6 +32,8 @@ const Main = () => {
   };
 
   const [formData, setFormData] = useState({
+    saleAmount: "",
+    purchaseAmount: "",
     email: "",
     tgUsername: "",
     wallet: "",
@@ -41,6 +43,10 @@ const Main = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Позволяем ввод только чисел в поле saleAmount
+    if (name === "saleAmount" && !/^\d*\.?\d*$/.test(value)) return;
+
     setFormData({ ...formData, [name]: value });
 
     setErrors((prevErrors) => ({
@@ -49,14 +55,24 @@ const Main = () => {
     }));
   };
 
+  const handleBlurSaleAmount = () => {
+    const saleAmount = parseFloat(formData.saleAmount);
+    if (!isNaN(saleAmount)) {
+      // Расчет purchaseAmount: 1.02 EUR = 1 USDT, вычитаем 4% комиссии
+      const purchaseAmount = ((saleAmount / 1.02) * 0.96).toFixed(2);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        purchaseAmount,
+      }));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       schema.parse(formData);
       setErrors({});
-
-      console.log("Отправляемые данные:", JSON.stringify(formData));
 
       const response = await fetch("http://localhost:5000/send-to-telegram", {
         method: "POST",
@@ -68,7 +84,6 @@ const Main = () => {
 
       const result = await response.json();
 
-      console.log("HTTP-статус ответа:", response.status);
       console.log("Ответ сервера:", result);
 
       if (!response.ok) {
@@ -76,6 +91,8 @@ const Main = () => {
       }
 
       setFormData({
+        saleAmount: "",
+        purchaseAmount: "",
         email: "",
         tgUsername: "",
         wallet: "",
@@ -97,10 +114,8 @@ const Main = () => {
     const { name } = e.target;
     try {
       schema.pick({ [name]: true }).parse({ [name]: formData[name] });
-      // Если валидация успешна, очищаем ошибку
       setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
     } catch (err) {
-      // Если есть ошибки, извлекаем их корректно
       const firstError = err.errors.find((error) => error.path[0] === name);
       if (firstError) {
         setErrors((prevErrors) => ({
@@ -284,6 +299,10 @@ const Main = () => {
                     className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
                     placeholder="0"
                     type="text"
+                    value={formData.saleAmount}
+                    onChange={handleChange}
+                    onBlur={handleBlurSaleAmount}
+                    required
                   />
                   <div className="pr-4">
                     <span className="text-[#b6b6b6] font-normal text-[14px]">
@@ -302,6 +321,9 @@ const Main = () => {
                     className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
                     placeholder="0"
                     type="text"
+                    value={formData.purchaseAmount}
+                    onChange={handleChange}
+                    readOnly
                   />
                   <div className="pr-4">
                     <span className="text-[#b6b6b6] font-normal text-[14px]">
@@ -378,7 +400,32 @@ const Main = () => {
           </div>
 
           <div className="bg-[#4e83b9] text-[#fdfdfb] rounded-[12px] p-[20px] lg:p-[32px] shadow-custom-sidebar sticky top-8 lg:col-start-2 lg:row-start-1">
-            Сайдбар
+            <span>Do you want to buy</span>
+            <p>
+              {formData.purchaseAmount || "0"} USDT
+              <div>TRC20</div>
+            </p>
+            <div>
+              <div>
+                <span>Rate:</span>
+                <span></span>
+              </div>
+            <div>
+              <div>
+                <span>Reserve:</span>
+                <span></span>
+              </div>
+            <div>
+              <div>
+                <span>Min amount:</span>
+                <span></span>
+              </div>
+            <div>
+              <div>
+                <span>Max amount:</span>
+                <span></span>
+              </div>
+            </div>
           </div>
 
           <div className=" lg:row-start-4 lg:col-span-1">

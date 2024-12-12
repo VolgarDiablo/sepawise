@@ -64,7 +64,7 @@ const Footer = () => {
                 className="font-bold text-[12px] leading-[1.2] cursor-pointer text-[#5a5a5a]"
                 onClick={(e) => handleCopy(e.target.innerText)}
               >
-                support@sepawise
+                support@sepawise.com
               </span>
             </div>
             <div>
@@ -75,7 +75,7 @@ const Footer = () => {
                 className="font-bold text-[12px] leading-[1.2] cursor-pointer text-[#5a5a5a]"
                 onClick={(e) => handleCopy(e.target.innerText)}
               >
-                partner@sepawise
+                partner@sepawise.com
               </span>
             </div>
           </div>

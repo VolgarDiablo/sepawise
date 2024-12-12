@@ -17,15 +17,13 @@ app.use(
 app.use(express.json());
 
 app.post("/send-to-telegram", async (req, res) => {
-  console.log("Используемые переменные окружения:");
-  console.log("TELEGRAM_BOT_TOKEN:", process.env.TELEGRAM_BOT_TOKEN);
-  console.log("TELEGRAM_CHAT_ID:", process.env.TELEGRAM_CHAT_ID);
-  console.log("Заголовки запроса:", req.headers);
   console.log("Полученные данные на сервере:", req.body);
 
-  const { email, tgUsername, wallet } = req.body;
-  if (!tgUsername || !email || !wallet) {
+  const { saleAmount, purchaseAmount, email, tgUsername, wallet } = req.body;
+  if (!saleAmount || !purchaseAmount || !tgUsername || !email || !wallet) {
     console.error("Ошибка: Одно из полей пустое", {
+      saleAmount,
+      purchaseAmount,
       tgUsername,
       email,
       wallet,
@@ -40,9 +38,11 @@ app.post("/send-to-telegram", async (req, res) => {
   const telegramUrl = `https://api.telegram.org/bot${telegramToken}/sendMessage`;
 
   const text = `
-  👤 *Имя*: \\$\{tgUsername\}
-  📧 *Email*: \\$\{email\}
-  📝 *Кошелек*: \\$\{wallet\}
+  💰 Сумма продажи: ${saleAmount} EUR
+  💵 Сумма получения: ${purchaseAmount} USDT
+  👤 Имя: ${tgUsername}
+  📧 Email: ${email}
+  📝 Кошелек: ${wallet}
   `;
 
   const response = await fetch(telegramUrl, {
