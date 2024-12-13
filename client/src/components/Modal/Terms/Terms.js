@@ -23,7 +23,7 @@ const Terms = ({ isVisible, onClose }) => {
       onClick={onClose}
     >
       <div
-        className="bg-white p-4 sm:pt-12 sm:pb-12 sm:pr-4 sm:pl-12 rounded-[8px] shadow-lg max-w-[900px] relative"
+        className="bg-white m-4 p-4 sm:pt-12 sm:pb-12 sm:pr-4 sm:pl-12 rounded-[8px] shadow-lg max-w-4xl relative overflow-hidden"
         style={{ maxHeight: "calc(100% - 64px)" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -61,7 +61,7 @@ const Terms = ({ isVisible, onClose }) => {
           <h2 className="font-medium text-xl leading-[1.6] pb-[24px] text-[#000000de]">
             SepaWise Terms and Conditions
           </h2>
-          <div className="text-[#00000090] leading-[1.6] font-normal text-[14px] h-[700px] pr-[20px] overflow-y-auto custom-scrollbar">
+          <div className="text-[#00000090] leading-[1.6] font-normal text-[14px] max-h-[660px] sm:max-h-[625px] lg:max-h-[700px] overflow-y-auto pr-4  pb-8  custom-scrollbar">
             <p className="mb-[14px] mt-[14px]">
               Before using the SepaWise service, the User must read the Terms
               and Conditions of the SepaWise service in their entirety. Using

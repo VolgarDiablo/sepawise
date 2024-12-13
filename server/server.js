@@ -16,6 +16,10 @@ app.use(
 
 app.use(express.json());
 
+const escapeMarkdown = (text) => {
+  return text.replace(/([_*[\]()~`>#+\-=|{}.!\\])/g, "\\$1");
+};
+
 app.post("/send-to-telegram", async (req, res) => {
   console.log("Полученные данные на сервере:", req.body);
 
@@ -38,22 +42,12 @@ app.post("/send-to-telegram", async (req, res) => {
   const telegramUrl = `https://api.telegram.org/bot${telegramToken}/sendMessage`;
 
   const text = `
-  💰 Сумма продажи: ${saleAmount} EUR
-  💵 Сумма получения: ${purchaseAmount} USDT
-  👤 Имя: ${tgUsername}
-  📧 Email: ${email}
-  📝 Кошелек: ${wallet}
+💰 *Сумма продажи*: \`${escapeMarkdown(saleAmount)} EUR\`
+💵 *Сумма получения*: \`${escapeMarkdown(purchaseAmount)} USDT TRC20\`
+👤 Имя: ${escapeMarkdown(tgUsername)}
+📧 *Email*: \`${escapeMarkdown(email)}\`
+📝 *Кошелек*: \`${escapeMarkdown(wallet)}\`
   `;
-
-  const response = await fetch(telegramUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: process.env.TELEGRAM_CHAT_ID,
-      text,
-      parse_mode: "MarkdownV2",
-    }),
-  });
 
   try {
     const response = await fetch(telegramUrl, {
@@ -62,6 +56,7 @@ app.post("/send-to-telegram", async (req, res) => {
       body: JSON.stringify({
         chat_id: chatId,
         text,
+        parse_mode: "MarkdownV2",
       }),
     });
 
