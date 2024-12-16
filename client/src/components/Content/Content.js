@@ -10,18 +10,16 @@ import NotFound from "../../pages/NotFound/NotFound";
 
 const Content = () => {
   return (
-    <div>
-      <Routes>
-        <Route path="/" element={<Main />} />
-        <Route path="rules" element={<Rules />}>
-          <Route path="terms" element={<Terms />} />
-          <Route path="cookie" element={<Cookie />} />
-          <Route path="policy" element={<Policy />} />
-          <Route path="aml" element={<Aml />} />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/" element={<Main />} />
+      <Route path="rules" element={<Rules />}>
+        <Route path="terms" element={<Terms />} />
+        <Route path="cookie" element={<Cookie />} />
+        <Route path="policy" element={<Policy />} />
+        <Route path="aml" element={<Aml />} />
+      </Route>
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 };
 

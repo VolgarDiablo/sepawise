@@ -5,12 +5,13 @@
 * {
   box-sizing: border-box;
 }
+
 body {
   margin: 0;
   @apply font-inter box-border;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f8f8fa;
+  background-color: #263257;
   font-family: "Inter", sans-serif;
 }
 
@@ -22,4 +23,22 @@ code {
 img {
   width: 100%;
   display: block;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d3e1ee;
+  border-radius: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #ebedf7;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
 }

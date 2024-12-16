@@ -9,7 +9,7 @@ function App() {
     <div className="flex flex-col min-h-screen pr-[15px] pl-[15px]">
       <Router>
         <Header />
-        <div className="flex-grow">
+        <div className="flex-grow ">
           <Content />
         </div>
         <Footer />

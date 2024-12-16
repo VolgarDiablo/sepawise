@@ -29,12 +29,12 @@ const Header = () => {
         <div className="flex items-center gap-[16px]">
           <NavLink
             to="/rules/aml"
-            className="bg-[#E2EDF9] text-[#3e3e3e] font-semibold leading-[1.4] px-4 py-[6px] text-[12px] text-center rounded-[8px] flex items-center justify-center w-[100px] h-[44px]"
+            className="bg-[#E2EDF9] text-custom-main-text font-semibold leading-[1.4] px-4 py-[6px] text-[12px] text-center rounded-[8px] flex items-center justify-center w-[100px] h-[44px]"
           >
             AML/KYC
           </NavLink>
 
-          <button className="w-[42px] h-[42px] flex items-center justify-center bg-white rounded-full">
+          <button className="w-[42px] h-[42px] flex items-center justify-center bg-custom-bg-card rounded-full">
             <svg
               width="20"
               height="26"
@@ -62,7 +62,7 @@ const Header = () => {
             </svg>
           </button>
 
-          <div className="bg-white px-[10px] h-[32px] w-[60px] font-semibold text-xs flex items-center justify-center gap-[2px] rounded-lg shadow-custom-lang">
+          <div className="bg-custom-bg-card text-custom-main-text px-[10px] h-[32px] w-[60px] font-semibold text-xs flex items-center justify-center gap-[2px] rounded-lg shadow-custom-lang">
             EN{" "}
             {/* <svg
               width="20"

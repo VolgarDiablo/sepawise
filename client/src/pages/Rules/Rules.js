@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, NavLink } from "react-router-dom";
+import { Routes, Route, NavLink, Navigate } from "react-router-dom";
 import Terms from "./Components/Terms/Terms";
 import Cookie from "./Components/Cookie/Cookie";
 import Policy from "./Components/Policy/Policy";
@@ -13,15 +13,17 @@ const Rules = () => {
         <h2 className="font-medium text-[20px] leading-[1.3] text-[#3e3e3e]">
           Terms of Exchange
         </h2>
-        <div className="flex flex-col gap-8">
+        <div className="grid gap-8 md:grid-flow-col">
           {/* Боковая панель */}
           <nav className="">
-            <ul className="flex flex-col gap-6">
+            <ul className="flex flex-col gap-6 max-w-[345px] items-start">
               <li>
                 <NavLink
                   to="terms"
                   className={({ isActive }) =>
-                    isActive ? "text-blue-600 font-bold" : "text-gray-700"
+                    isActive
+                      ? "text-blue-600 font-bold"
+                      : "text-[#4E83B9] opacity-[0.8]"
                   }
                 >
                   Terms and Conditions
@@ -31,7 +33,7 @@ const Rules = () => {
                 <NavLink
                   to="cookie"
                   className={({ isActive }) =>
-                    isActive ? "text-blue-600 font-bold" : "text-gray-700"
+                    isActive ? "text-blue-600 font-bold" : "text-[#4E83B9]"
                   }
                 >
                   Cookie Use Agreement
@@ -41,7 +43,7 @@ const Rules = () => {
                 <NavLink
                   to="policy"
                   className={({ isActive }) =>
-                    isActive ? "text-blue-600 font-bold" : "text-gray-700"
+                    isActive ? "text-blue-600 font-bold" : "text-[#4E83B9]"
                   }
                 >
                   Personal Data Processing Policy
@@ -51,7 +53,7 @@ const Rules = () => {
                 <NavLink
                   to="aml"
                   className={({ isActive }) =>
-                    isActive ? "text-blue-600 font-bold" : "text-gray-700"
+                    isActive ? "text-blue-600 font-bold" : "text-[#4E83B9]"
                   }
                 >
                   AML/KYC
@@ -61,8 +63,9 @@ const Rules = () => {
           </nav>
 
           {/* Основной контент */}
-          <div className=" bg-white shadow-md">
+          <div className=" bg-white p-8 rounded-[12px] shadow-md">
             <Routes>
+              <Route index element={<Navigate to="terms" replace />} />
               <Route path="terms" element={<Terms />} />
               <Route path="cookie" element={<Cookie />} />
               <Route path="policy" element={<Policy />} />

@@ -1,29 +1,50 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import style from "./Terms.css";
+import "./Terms.css";
 
 const Terms = ({ isVisible, onClose }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [animateModal, setAnimateModal] = useState(false);
+
   useEffect(() => {
     if (isVisible) {
+      setShowModal(true);
       document.body.style.overflow = "hidden";
+      setTimeout(() => setAnimateModal(true), 10);
     } else {
+      setAnimateModal(false);
+      const timeout = setTimeout(() => setShowModal(false), 500);
       document.body.style.overflow = "";
+      return () => clearTimeout(timeout);
     }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
   }, [isVisible]);
 
-  if (!isVisible) return null;
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape" && isVisible) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isVisible, onClose]);
+
+  if (!showModal) return null;
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-500 ${
+        animateModal
+          ? "opacity-100 pointer-events-auto"
+          : "opacity-0 pointer-events-none"
+      }`}
       onClick={onClose}
     >
       <div
-        className="bg-white m-4 p-4 sm:pt-12 sm:pb-12 sm:pr-4 sm:pl-12 rounded-[8px] shadow-lg max-w-4xl relative overflow-hidden"
+        className={`bg-white m-4 p-4 sm:pt-12 sm:pb-12 sm:pr-4 sm:pl-12 rounded-[8px] shadow-lg max-w-4xl relative overflow-hidden transform transition-transform duration-500 ${
+          animateModal ? "scale-100" : "scale-95"
+        }`}
         style={{ maxHeight: "calc(100% - 64px)" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -61,7 +82,7 @@ const Terms = ({ isVisible, onClose }) => {
           <h2 className="font-medium text-xl leading-[1.6] pb-[24px] text-[#000000de]">
             SepaWise Terms and Conditions
           </h2>
-          <div className="text-[#00000090] leading-[1.6] font-normal text-[14px] max-h-[660px] sm:max-h-[625px] lg:max-h-[700px] overflow-y-auto pr-4  pb-8  custom-scrollbar">
+          <div className="text-[#00000090] leading-[1.6] font-normal text-[14px] max-h-[660px] sm:max-h-[625px] lg:max-h-[700px] overflow-y-auto pr-4 pb-8 custom-scrollbar">
             <p className="mb-[14px] mt-[14px]">
               Before using the SepaWise service, the User must read the Terms
               and Conditions of the SepaWise service in their entirety. Using
@@ -70,10 +91,10 @@ const Terms = ({ isVisible, onClose }) => {
               unless you have read, understood and accepted all the provisions
               of these Terms and Conditions.
             </p>
-            <ol className="list-decimal-nested">
+            <ol className="list-decimal-nested-terms">
               <li>
                 <span className="font-bold">Terms and Conditions</span>
-                <ol className="list-decimal-nested">
+                <ol className="list-decimal-nested-terms">
                   <li>
                     SepaWise (the "Service") is a digital currency service
                     located on the Internet at https://sepawise.com.
@@ -118,7 +139,7 @@ const Terms = ({ isVisible, onClose }) => {
                 <span className="font-bold">
                   Subject of the Agreement and Commencement
                 </span>
-                <ol className="list-decimal-nested">
+                <ol className="list-decimal-nested-terms">
                   <li>
                     The subject hereof is services for the circulation of
                     digital currencies, provided upon the User' request, as well
@@ -156,7 +177,7 @@ const Terms = ({ isVisible, onClose }) => {
               </li>
               <li>
                 <span className="font-bold">Terms of Service</span>
-                <ol className="list-decimal-nested">
+                <ol className="list-decimal-nested-terms">
                   <li>
                     Only those Users who have fully read and consent to the
                     terms and conditions for the provision of services by
@@ -344,7 +365,7 @@ const Terms = ({ isVisible, onClose }) => {
               </li>
               <li>
                 <span className="font-bold">Privacy Policy</span>
-                <ol className="list-decimal-nested">
+                <ol className="list-decimal-nested-terms">
                   <li>
                     For transactions, the Service accepts the User personal
                     data, which the Service shall store in an encrypted form,
@@ -387,7 +408,7 @@ const Terms = ({ isVisible, onClose }) => {
 
               <li>
                 <span className="font-bold">Limitation of Responsibility</span>
-                <ol className="list-decimal-nested">
+                <ol className="list-decimal-nested-terms">
                   <li>
                     The User shall guarantee that he is not a citizen and tax
                     resident of the United States of America, North Korea and
@@ -462,7 +483,7 @@ const Terms = ({ isVisible, onClose }) => {
                 <span className="font-bold">
                   Dispute Resolution and Claim Acceptance Procedure
                 </span>
-                <ol className="list-decimal-nested">
+                <ol className="list-decimal-nested-terms">
                   <li>
                     Disputes and disagreements arising from the provision of
                     services to the User by the Service shall be resolved
@@ -477,7 +498,7 @@ const Terms = ({ isVisible, onClose }) => {
               </li>
               <li>
                 <span className="font-bold">Final Provisions</span>
-                <ol className="list-decimal-nested">
+                <ol className="list-decimal-nested-terms">
                   <li>
                     The Service shall have the right to send information to the
                     User e-mail about the status of the exchange process, as

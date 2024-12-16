@@ -1,0 +1,26 @@
+.list-decimal-nested-aml {
+  list-style: none;
+  counter-reset: level1; /* Инициализация для верхнего уровня */
+}
+.list-decimal-nested-aml > li {
+  counter-increment: level1;
+  position: relative;
+  padding-left: 1.5rem;
+  margin: 14px auto;
+}
+.list-decimal-nested-aml > li > ul {
+  list-style: disc;
+  position: relative;
+  padding-left: 2rem;
+  margin: 0 auto;
+}
+
+.list-decimal-nested-aml > li > ul:first-child {
+  margin-top: 14px;
+}
+
+.list-decimal-nested-aml > li::before {
+  content: counter(level1) ".";
+  position: absolute;
+  left: 0;
+}

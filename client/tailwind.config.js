@@ -7,10 +7,11 @@ module.exports = {
         inter: ["Inter", "sans-serif"],
       },
       colors: {
-        "custom-tab-button-blue": "rgb(78, 131, 185)",
+        "custom-tab-button-blue": "#263257",
         "custom-bg-tab-button": "rgba(78, 131, 185, 0.04)",
-        "custom-scrollbar-bg": "#ebedf7",
-        "custom-scrollbar-thumb": "#d3e1ee",
+        "custom-main-text": "#f1f4f8",
+        "custom-bg-card": "#2A3760",
+        "custom-secondary-text": "#6b83a5",
       },
       boxShadow: {
         "custom-lang":
@@ -26,25 +27,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    function ({ addUtilities }) {
-      addUtilities({
-        /* Стили для скроллбара */
-        ".custom-scrollbar::-webkit-scrollbar": {
-          width: "5px",
-          height: "5px",
-        },
-        ".custom-scrollbar::-webkit-scrollbar-thumb": {
-          backgroundColor: "#d3e1ee",
-          borderRadius: "20px",
-        },
-        ".custom-scrollbar::-webkit-scrollbar-track": {
-          backgroundColor: "#ebedf7",
-        },
-        ".custom-scrollbar::-webkit-scrollbar-button": {
-          display: "none", // Убираем стрелки
-        },
-      });
-    },
-  ],
+  plugins: [],
 };

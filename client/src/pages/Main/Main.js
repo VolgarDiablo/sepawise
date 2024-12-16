@@ -145,24 +145,24 @@ const Main = () => {
       <form onSubmit={isBothChecked ? handleSubmit : (e) => e.preventDefault()}>
         <div className="flex items-center justify-center pt-[16px] pb-[32px]">
           <main className="grid gap-[30px] max-w-[1200px] w-full grid-cols-1 lg:grid-cols-[1fr_370px] items-start">
-            <div className="bg-white p-4 rounded-2xl shadow-custom-main flex flex-col gap-[24px] lg:row-start-1 lg:col-start-1 md:p-8">
-              <h1 className="text-[#3e3e3e] text-[24px] leading-[1.3] font-semibold">
+            <div className="bg-custom-bg-card p-4 rounded-2xl shadow-custom-main flex flex-col gap-[24px] lg:row-start-1 lg:col-start-1 md:p-8">
+              <h1 className="text-custom-main-text text-[24px] leading-[1.3] font-semibold">
                 Want to sell
               </h1>
               <div className="flex flex-col gap-[35px] ">
                 <div className="flex flex-col gap-[20px] sm:gap-[56px] sm:flex-row">
                   <div className="flex flex-col gap-[15px]">
-                    <span className="text-[#3e3e3e] text-[12px] leading-[1.4] font-medium">
+                    <span className="text-custom-main-text text-[12px] leading-[1.4] font-medium">
                       Payment systems
                     </span>
                     <div className="grid gap-[4px] grid-cols-[repeat(4,74px)] sm:gap-[8px]">
                       <button
                         type="button"
                         onClick={() => handleClickBlockSell("All")}
-                        className={`rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab
+                        className={`text-custom-main-text rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab
                           ${
                             selectedButtonBlockSell === "All"
-                              ? "bg-white border-custom-tab-button-blue border-2 text-custom-tab-button-blue"
+                              ? "bg-custom-bg-card border-custom-tab-button-blue border-2 text-custom-main-text"
                               : ""
                           }
                           hover:bg-custom-bg-tab-button hover:outline hover:outline-1 hover:outline-custom-tab-button-blue hover:shadow-none `}
@@ -172,10 +172,10 @@ const Main = () => {
                       <button
                         type="button"
                         onClick={() => handleClickBlockSell("Banks")}
-                        className={`rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab
+                        className={`text-custom-main-text rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab
                           ${
                             selectedButtonBlockSell === "Banks"
-                              ? "bg-white border-custom-tab-button-blue border-2 text-custom-tab-button-blue"
+                              ? "bg-custom-bg-card border-custom-tab-button-blue border-2 text-custom-main-text"
                               : "border-[2px] border-transparent"
                           } 
                            hover:bg-custom-bg-tab-button hover:outline hover:outline-1 hover:outline-custom-tab-button-blue hover:shadow-none`}
@@ -185,12 +185,15 @@ const Main = () => {
                     </div>
                   </div>
                   <div className="flex flex-col gap-[15px]">
-                    <span className="text-[#3e3e3e] text-[12px] leading-[1.4] font-medium">
+                    <span className="text-custom-main-text text-[12px] leading-[1.4] font-medium">
                       Currencies
                     </span>
                     {/* <div className="grid gap-[4px] grid-cols-[repeat(4,74px)] sm:gap-[8px]"> */}
                     <div className="grid gap-[4px] grid-cols-[repeat(1,74px)] sm:gap-[8px]">
-                      <button className="rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab bg-white border-custom-tab-button-blue border-2 text-custom-tab-button-blue">
+                      <button
+                        type="button"
+                        className="rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab bg-custom-bg-card border-custom-tab-button-blue border-2 text-custom-main-text"
+                      >
                         EUR
                       </button>
                     </div>
@@ -201,7 +204,7 @@ const Main = () => {
                     <div className="w-[28px] p-[2px]">
                       <img src={iconSepa} alt="SEPA" />
                     </div>
-                    <h5 className="font-semibold text-[12px] leading-[1.3] text-[#3e3e3e]">
+                    <h5 className="font-semibold text-[12px] leading-[1.3] text-custom-main-text">
                       SEPA
                     </h5>
                     <div className="flex flex-wrap gap-[3px] justify-center">
@@ -214,24 +217,24 @@ const Main = () => {
               </div>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl shadow-custom-main flex flex-col gap-[24px] lg:row-start-2 lg:col-start-1  md:p-8">
-              <h1 className="text-[#3e3e3e] text-[24px] leading-[1.3] font-semibold">
+            <div className="bg-custom-bg-card p-4 rounded-2xl shadow-custom-main flex flex-col gap-[24px] lg:row-start-2 lg:col-start-1  md:p-8">
+              <h1 className="text-custom-main-text text-[24px] leading-[1.3] font-semibold">
                 Want to buy
               </h1>
               <div className="flex flex-col gap-[35px]">
                 <div className="flex flex-col gap-[20px] sm:gap-[56px] sm:flex-row">
                   <div className="flex flex-col gap-[15px]">
-                    <span className="text-[#3e3e3e] text-[12px] leading-[1.4] font-medium">
+                    <span className="text-custom-main-text text-[12px] leading-[1.4] font-medium">
                       Payment systems
                     </span>
                     <div className="grid gap-[4px] grid-cols-[repeat(4,74px)] sm:gap-[8px]">
                       <button
                         type="button"
                         onClick={() => handleClickBlockBuy("All")}
-                        className={`rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium  shadow-custom-button-tab
+                        className={`text-custom-main-text rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium  shadow-custom-button-tab
                           ${
                             selectedButtonBlockBuy === "All"
-                              ? "bg-white border-custom-tab-button-blue border-2 text-custom-tab-button-blue"
+                              ? "bg-custom-bg-card border-custom-tab-button-blue border-2 text-custom-main-text"
                               : ""
                           }
                           hover:bg-custom-bg-tab-button hover:outline hover:outline-1 hover:outline-custom-tab-button-blue hover:shadow-none `}
@@ -241,10 +244,10 @@ const Main = () => {
                       <button
                         type="button"
                         onClick={() => handleClickBlockBuy("Crypto")}
-                        className={`rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab
+                        className={`text-custom-main-text rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab
                           ${
                             selectedButtonBlockBuy === "Crypto"
-                              ? "bg-white border-custom-tab-button-blue border-2 text-custom-tab-button-blue"
+                              ? "bg-custom-bg-card border-custom-tab-button-blue border-2 text-custom-main-text"
                               : "border-[2px] border-transparent"
                           }
                           hover:outline hover:outline-1 hover:outline-custom-tab-button-blue hover:shadow-none`}
@@ -254,12 +257,15 @@ const Main = () => {
                     </div>
                   </div>
                   <div className="flex flex-col gap-[15px]">
-                    <span className="text-[#3e3e3e] text-[12px] leading-[1.4] font-medium">
+                    <span className="text-custom-main-text text-[12px] leading-[1.4] font-medium">
                       Currencies
                     </span>
                     {/* <div className="grid gap-[4px] grid-cols-[repeat(4,74px)] sm:gap-[8px]"> */}
                     <div className="grid gap-[4px] grid-cols-[repeat(1,74px)] sm:gap-[8px]">
-                      <button className="rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab bg-white border-custom-tab-button-blue border-2 text-custom-tab-button-blue">
+                      <button
+                        type="button"
+                        className="rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab bg-custom-bg-card border-custom-tab-button-blue border-2 text-custom-main-text"
+                      >
                         TRC20
                       </button>
                     </div>
@@ -270,7 +276,7 @@ const Main = () => {
                     <div className="w-[28px] p-[2px]">
                       <img src={iconTehterTRC} alt="Tehter TRC20" />
                     </div>
-                    <h5 className="font-semibold text-[12px] leading-[1.3] text-[#3e3e3e]">
+                    <h5 className="font-semibold text-[12px] leading-[1.3] text-custom-main-text">
                       Tether
                     </h5>
                     <div className="flex flex-wrap gap-[3px] justify-center">
@@ -283,16 +289,16 @@ const Main = () => {
               </div>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl shadow-custom-main flex flex-col gap-[32px] lg:row-start-3 lg:col-start-1  md:p-8">
-              <h1 className="text-[#3e3e3e] text-[24px] leading-[1.3] font-semibold">
+            <div className="bg-custom-bg-card p-4 rounded-2xl shadow-custom-main flex flex-col gap-[32px] lg:row-start-3 lg:col-start-1  md:p-8">
+              <h1 className="text-custom-main-text text-[24px] leading-[1.3] font-semibold">
                 Payment details
               </h1>
               <div className="grid gap-[16px] grid-cols-1 sm:grid-cols-2">
                 <div className="flex flex-col gap-[20px]">
-                  <h3 className="text-[#3e3e3e] text-[16px] leading-[1.06] font-semibold">
+                  <h3 className="text-custom-main-text text-[16px] leading-[1.06] font-semibold">
                     Sale amount SEPA
                   </h3>
-                  <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
+                  <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-custom-bg-card h-[60px rounded-[8px] overflow-hidden justify-between">
                     <input
                       name="saleAmount"
                       className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
@@ -311,10 +317,10 @@ const Main = () => {
                   </div>
                 </div>
                 <div className="flex flex-col gap-[20px]">
-                  <h3 className="text-[#3e3e3e] text-[16px] leading-[1.06] font-semibold">
+                  <h3 className="text-custom-main-text text-[16px] leading-[1.06] font-semibold">
                     Purchase amount Tether
                   </h3>
-                  <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
+                  <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-custom-bg-card h-[60px rounded-[8px] overflow-hidden justify-between">
                     <input
                       name="purchaseAmount"
                       className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
@@ -334,12 +340,12 @@ const Main = () => {
               </div>
 
               <div className="grid gap-[20px] grid-cols-1">
-                <h3 className="text-[#3e3e3e] text-[16px] leading-[1.06] font-semibold">
+                <h3 className="text-custom-main-text text-[16px] leading-[1.06] font-semibold">
                   Your details Tether
                 </h3>
                 <div className="grid gap-[16px] grid-cols-1 sm:grid-cols-2">
                   <div className="flex flex-col">
-                    <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
+                    <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-custom-bg-card h-[60px rounded-[8px] overflow-hidden justify-between">
                       <input
                         name="email"
                         className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
@@ -358,11 +364,11 @@ const Main = () => {
                   </div>
 
                   <div className="flex flex-col">
-                    <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
+                    <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-custom-bg-card h-[60px rounded-[8px] overflow-hidden justify-between">
                       <input
                         name="tgUsername"
                         className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
-                        placeholder="Enter your Tg @username"
+                        placeholder="Telegram"
                         type="text"
                         value={formData.tgUsername}
                         onChange={handleChange}
@@ -377,7 +383,7 @@ const Main = () => {
                   </div>
 
                   <div className="flex flex-col">
-                    <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
+                    <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-custom-bg-card h-[60px rounded-[8px] overflow-hidden justify-between">
                       <input
                         name="wallet"
                         className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
@@ -398,7 +404,7 @@ const Main = () => {
               </div>
             </div>
 
-            <div className="bg-[#4e83b9] text-[#fdfdfb] rounded-[12px] p-[20px] lg:p-[32px] shadow-custom-sidebar sticky top-8 lg:col-start-2 lg:row-start-1">
+            <div className="bg-[#2A3760] text-[#fdfdfb] rounded-[12px] p-[20px] lg:p-[32px] shadow-custom-sidebar sticky lg:top-8 lg:col-start-2 lg:row-start-1">
               <span className="font-normal text-[12px] leading-[1.6] text-[#d3e1ee]">
                 Do you want to buy
               </span>
@@ -485,7 +491,7 @@ const Main = () => {
                       <span
                         className={`font-medium text-[12px] leading-[1.4] transition-colors duration-200 ${
                           checkboxState.checkboxTerms
-                            ? "text-[#4e83b9]"
+                            ? "text-custom-secondary-text"
                             : "text-[#b6b6b6]"
                         }`}
                       >
