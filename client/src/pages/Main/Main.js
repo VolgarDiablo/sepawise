@@ -474,7 +474,7 @@ const Main = () => {
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className={`w-4 h-4 transition-opacity duration-200 fill-[#4E83B9] ${
+                          className={`w-4 h-4 transition-opacity duration-200 fill-custom-secondary-text ${
                             checkboxState.checkboxTerms
                               ? "opacity-100"
                               : "opacity-0"
@@ -518,13 +518,13 @@ const Main = () => {
                       <span
                         className={`mr-[10px] w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-[250ms] ${
                           checkboxState.checkboxAml
-                            ? "border-[#4E83B9]"
+                            ? "border-custom-secondary-text"
                             : "border-gray-300"
                         }`}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className={`w-4 h-4 transition-opacity duration-200 fill-[#4E83B9] ${
+                          className={`w-4 h-4 transition-opacity duration-200 fill-custom-secondary-text ${
                             checkboxState.checkboxAml
                               ? "opacity-100"
                               : "opacity-0"

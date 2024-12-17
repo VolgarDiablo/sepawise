@@ -11,12 +11,14 @@ module.exports = {
         "custom-bg-tab-button": "rgba(78, 131, 185, 0.04)",
         "custom-main-text": "#f1f4f8",
         "custom-bg-card": "#8085b2",
-        "custom-secondary-text": "#8b91c3",
+        "custom-secondary-text": "#BFC3FF",
         "custom-not-active-text": "#b6b6b6",
         "custom-not-active-button": "#b6b6b6",
         "custom-active-button": "#757aa7",
-        "custom-bg-sidebar": "#455184",
+        "custom-bg-sidebar": "#3E4875",
         "custom-global-bg-modal": "#313131",
+        "custom-bg-card-aml": "#7F859C",
+        "custom-active-text-navigation-rules": "#BFC3FF",
       },
       boxShadow: {
         "custom-lang":

@@ -29,7 +29,7 @@ const Header = () => {
         <div className="flex items-center gap-[16px]">
           <NavLink
             to="/rules/aml"
-            className="bg-[#E2EDF9] text-custom-main-text font-semibold leading-[1.4] px-4 py-[6px] text-[12px] text-center rounded-[8px] flex items-center justify-center w-[100px] h-[44px]"
+            className="bg-custom-bg-card-aml text-custom-main-text font-semibold leading-[1.4] px-4 py-[6px] text-[12px] text-center rounded-[8px] flex items-center justify-center w-[100px] h-[44px]"
           >
             AML/KYC
           </NavLink>
