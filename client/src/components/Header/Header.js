@@ -41,7 +41,7 @@ const Header = () => {
               viewBox="0 0 20 26"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              style={{ color: "rgb(182, 182, 182)" }}
+              className="text-white"
             >
               <path
                 fill-rule="evenodd"

@@ -159,26 +159,26 @@ const Main = () => {
                       <button
                         type="button"
                         onClick={() => handleClickBlockSell("All")}
-                        className={`text-custom-main-text rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab
+                        className={`text-custom-main-text rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium  shadow-custom-button-tab
                           ${
                             selectedButtonBlockSell === "All"
-                              ? "bg-custom-bg-card border-custom-tab-button-blue border-2 text-custom-main-text"
+                              ? "bg-custom-bg-card border-custom-border-tab-button border-2 text-custom-main-text"
                               : ""
                           }
-                          hover:bg-custom-bg-tab-button hover:outline hover:outline-1 hover:outline-custom-tab-button-blue hover:shadow-none `}
+                          hover:bg-custom-bg-tab-button hover:outline hover:outline-custom-border-tab-button hover:shadow-none `}
                       >
                         All
                       </button>
                       <button
                         type="button"
                         onClick={() => handleClickBlockSell("Banks")}
-                        className={`text-custom-main-text rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab
+                        className={`text-custom-main-text rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium  shadow-custom-button-tab
                           ${
                             selectedButtonBlockSell === "Banks"
-                              ? "bg-custom-bg-card border-custom-tab-button-blue border-2 text-custom-main-text"
+                              ? "bg-custom-bg-card border-custom-border-tab-button border-2 text-custom-main-text"
                               : "border-[2px] border-transparent"
                           } 
-                           hover:bg-custom-bg-tab-button hover:outline hover:outline-1 hover:outline-custom-tab-button-blue hover:shadow-none`}
+                           hover:bg-custom-bg-tab-button hover:outline hover:outline-custom-border-tab-button hover:shadow-none`}
                       >
                         Banks
                       </button>
@@ -192,7 +192,7 @@ const Main = () => {
                     <div className="grid gap-[4px] grid-cols-[repeat(1,74px)] sm:gap-[8px]">
                       <button
                         type="button"
-                        className="rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab bg-custom-bg-card border-custom-tab-button-blue border-2 text-custom-main-text"
+                        className="rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab bg-custom-bg-card border-custom-border-tab-button border-2 text-custom-main-text"
                       >
                         EUR
                       </button>
@@ -200,7 +200,7 @@ const Main = () => {
                   </div>
                 </div>
                 <div className="opacity-100 grid grid-cols-3 gap-[4px] sm:gap-[14px] p-[10px] mt-[-10px] ml-[-10px] max-h-[450px] h-[130px] overflow-y-auto transition-height duration-300 ease-in-out sm:grid-cols-[repeat(5,1fr)] lg:h-[130px] lg:grid-cols-[repeat(6,1fr)]">
-                  <div className="min-w-[100px max-w-[110px] w-auto sm:w-[120px] h-[110px] flex flex-col gap-[8px] p-[9px] justify-center items-center shadow-custom-button-currencie border-2 rounded-[8px] border-custom-tab-button-blue">
+                  <div className="min-w-[100px max-w-[110px] w-auto sm:w-[120px] h-[110px] flex flex-col gap-[8px] p-[9px] justify-center items-center shadow-custom-button-currencie border-2 rounded-[8px] border-custom-border-tab-button">
                     <div className="w-[28px] p-[2px]">
                       <img src={iconSepa} alt="SEPA" />
                     </div>
@@ -208,7 +208,7 @@ const Main = () => {
                       SEPA
                     </h5>
                     <div className="flex flex-wrap gap-[3px] justify-center">
-                      <h5 className="font-semibold text-[12px] leading-[1.3] text-[#3e83b9]">
+                      <h5 className="font-semibold text-[12px] leading-[1.3] text-white">
                         EUR
                       </h5>
                     </div>
@@ -234,23 +234,23 @@ const Main = () => {
                         className={`text-custom-main-text rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium  shadow-custom-button-tab
                           ${
                             selectedButtonBlockBuy === "All"
-                              ? "bg-custom-bg-card border-custom-tab-button-blue border-2 text-custom-main-text"
+                              ? "bg-custom-bg-card border-custom-border-tab-button border-2 text-custom-main-text"
                               : ""
                           }
-                          hover:bg-custom-bg-tab-button hover:outline hover:outline-1 hover:outline-custom-tab-button-blue hover:shadow-none `}
+                          hover:bg-custom-bg-tab-button hover:outline hover:outline-custom-border-tab-button hover:shadow-none `}
                       >
                         All
                       </button>
                       <button
                         type="button"
                         onClick={() => handleClickBlockBuy("Crypto")}
-                        className={`text-custom-main-text rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab
+                        className={`text-custom-main-text rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium shadow-custom-button-tab
                           ${
                             selectedButtonBlockBuy === "Crypto"
-                              ? "bg-custom-bg-card border-custom-tab-button-blue border-2 text-custom-main-text"
+                              ? "bg-custom-bg-card border-custom-border-tab-button border-2 text-custom-main-text"
                               : "border-[2px] border-transparent"
                           }
-                          hover:outline hover:outline-1 hover:outline-custom-tab-button-blue hover:shadow-none`}
+                          hover:outline hover:outline-custom-border-tab-button hover:shadow-none`}
                       >
                         Crypto
                       </button>
@@ -264,7 +264,7 @@ const Main = () => {
                     <div className="grid gap-[4px] grid-cols-[repeat(1,74px)] sm:gap-[8px]">
                       <button
                         type="button"
-                        className="rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab bg-custom-bg-card border-custom-tab-button-blue border-2 text-custom-main-text"
+                        className="rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab bg-custom-bg-card border-custom-border-tab-button border-2 text-custom-main-text"
                       >
                         TRC20
                       </button>
@@ -272,7 +272,7 @@ const Main = () => {
                   </div>
                 </div>
                 <div className="opacity-100 grid grid-cols-3 gap-[4px] sm:gap-[14px] p-[10px] mt-[-10px] ml-[-10px] max-h-[450px] h-[130px] overflow-y-auto transition-height duration-300 ease-in-out sm:grid-cols-[repeat(5,1fr)] lg:h-[130px] lg:grid-cols-[repeat(6,1fr)]">
-                  <div className="min-w-[100px max-w-[110px] w-auto sm:w-[120px] h-[110px] flex flex-col gap-[8px] p-[9px] justify-center items-center shadow-custom-button-currencie border-2 rounded-[8px] border-custom-tab-button-blue">
+                  <div className="min-w-[100px max-w-[110px] w-auto sm:w-[120px] h-[110px] flex flex-col gap-[8px] p-[9px] justify-center items-center shadow-custom-button-currencie border-2 rounded-[8px] border-custom-border-tab-button">
                     <div className="w-[28px] p-[2px]">
                       <img src={iconTehterTRC} alt="Tehter TRC20" />
                     </div>
@@ -280,7 +280,7 @@ const Main = () => {
                       Tether
                     </h5>
                     <div className="flex flex-wrap gap-[3px] justify-center">
-                      <h5 className="font-semibold text-[12px] leading-[1.3] text-[#3e83b9]">
+                      <h5 className="font-semibold text-[12px] leading-[1.3] text-white">
                         TRC20
                       </h5>
                     </div>
@@ -298,7 +298,7 @@ const Main = () => {
                   <h3 className="text-custom-main-text text-[16px] leading-[1.06] font-semibold">
                     Sale amount SEPA
                   </h3>
-                  <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-custom-bg-card h-[60px rounded-[8px] overflow-hidden justify-between">
+                  <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
                     <input
                       name="saleAmount"
                       className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
@@ -320,7 +320,7 @@ const Main = () => {
                   <h3 className="text-custom-main-text text-[16px] leading-[1.06] font-semibold">
                     Purchase amount Tether
                   </h3>
-                  <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-custom-bg-card h-[60px rounded-[8px] overflow-hidden justify-between">
+                  <div className="font-normal text-[14px] bg-white leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] h-[60px rounded-[8px] overflow-hidden justify-between">
                     <input
                       name="purchaseAmount"
                       className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
@@ -404,46 +404,46 @@ const Main = () => {
               </div>
             </div>
 
-            <div className="bg-[#2A3760] text-[#fdfdfb] rounded-[12px] p-[20px] lg:p-[32px] shadow-custom-sidebar sticky lg:top-8 lg:col-start-2 lg:row-start-1">
-              <span className="font-normal text-[12px] leading-[1.6] text-[#d3e1ee]">
+            <div className="bg-custom-bg-sidebar text-white rounded-[12px] p-[20px] lg:p-[32px] shadow-custom-sidebar sticky lg:top-8 lg:col-start-2 lg:row-start-1">
+              <span className="font-normal text-[12px] leading-[1.6] ">
                 Do you want to buy
               </span>
-              <p className="font-normal text-[32px] leading-[1.06] text-[#fdfdfb] relative w-fit m-0 mt-[10px]">
+              <p className="font-normal text-[32px] leading-[1.06]  relative w-fit m-0 mt-[10px]">
                 {formData.purchaseAmount || "0"} USDT
-                <div className="text-[12px] font-semibold leading-[1.06] text-[#fdfdfb]  absolute right-0 top-[-12px]">
+                <div className="text-[12px] font-semibold leading-[1.06]   absolute right-0 top-[-12px]">
                   TRC20
                 </div>
               </p>
               <div className="mt-[23px] grid sm:grid-cols-4 lg:grid-cols-2   gap-4">
                 <div className="flex flex-col cursor-pointer gap-[7px]">
-                  <span className="font-normal text-[12px] leading-[1.6] text-[#d3e1ee]">
+                  <span className="font-normal text-[12px] leading-[1.6] ">
                     Rate:
                   </span>
-                  <span className="font-bold text-[12px] leading-[1.2] text-[#fbfbfd]">
+                  <span className="font-bold text-[12px] leading-[1.2] ">
                     1.02 EUR = 1 USDT
                   </span>
                 </div>
                 <div className="flex flex-col cursor-pointer gap-[7px]">
-                  <span className="font-normal text-[12px] leading-[1.6] text-[#d3e1ee]">
+                  <span className="font-normal text-[12px] leading-[1.6] ">
                     Reserve:
                   </span>
-                  <span className="font-bold text-[12px] leading-[1.2] text-[#fbfbfd]">
+                  <span className="font-bold text-[12px] leading-[1.2] ">
                     123123
                   </span>
                 </div>
                 <div className="flex flex-col cursor-pointer gap-[7px]">
-                  <span className="font-normal text-[12px] leading-[1.6] text-[#d3e1ee]">
+                  <span className="font-normal text-[12px] leading-[1.6] ">
                     Min amount:
                   </span>
-                  <span className="font-bold text-[12px] leading-[1.2] text-[#fbfbfd]">
+                  <span className="font-bold text-[12px] leading-[1.2] ">
                     123123
                   </span>
                 </div>
                 <div className="flex flex-col cursor-pointer gap-[7px]">
-                  <span className="font-normal text-[12px] leading-[1.6] text-[#d3e1ee]">
+                  <span className="font-normal text-[12px] leading-[1.6] ">
                     Max amount:
                   </span>
-                  <span className="font-bold text-[12px] leading-[1.2] text-[#fbfbfd]">
+                  <span className="font-bold text-[12px] leading-[1.2] ">
                     123123
                   </span>
                 </div>
@@ -468,7 +468,7 @@ const Main = () => {
                       <span
                         className={`mr-[10px] w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-[250ms] ${
                           checkboxState.checkboxTerms
-                            ? "border-[#4E83B9]"
+                            ? "border-custom-secondary-text"
                             : "border-gray-300"
                         }`}
                       >
@@ -491,15 +491,15 @@ const Main = () => {
                       <span
                         className={`font-medium text-[12px] leading-[1.4] transition-colors duration-200 ${
                           checkboxState.checkboxTerms
-                            ? "text-custom-secondary-text"
-                            : "text-[#b6b6b6]"
+                            ? "text-white"
+                            : "text-custom-not-active-text"
                         }`}
                       >
                         I agree with personal data processing and accept
                         <NavLink
                           to="/rules/terms"
                           target="_blank"
-                          className="text-[#551a8b] font-normal"
+                          className="text-custom-secondary-text font-bold"
                         >
                           {" "}
                           exchange terms
@@ -541,15 +541,15 @@ const Main = () => {
                       <span
                         className={`font-medium text-[12px] leading-[1.4] transition-colors duration-200 ${
                           checkboxState.checkboxAml
-                            ? "text-[#4e83b9]"
-                            : "text-[#b6b6b6]"
+                            ? "text-white"
+                            : "text-custom-not-active-text"
                         }`}
                       >
                         I agree with
                         <NavLink
                           to="/rules/aml-kyc"
                           target="_blank"
-                          className="text-[#551a8b] font-normal"
+                          className="text-custom-secondary-text font-bold"
                         >
                           {" "}
                           the KYC and AML procedure
@@ -564,8 +564,8 @@ const Main = () => {
                     disabled={!isBothChecked}
                     className={`text-[12px] font-semibold leading-[1.4] h-[64px] py-3 px-5 rounded-lg uppercase transition-colors duration-[250ms] ${
                       isBothChecked
-                        ? "bg-[#4E83B9] text-[#FBFBFD]"
-                        : "bg-[#E0E0E0] text-[#00000042]"
+                        ? "bg-custom-active-button text-[#FBFBFD]"
+                        : "bg-custom-not-active-text text-[#00000042]"
                     }`}
                   >
                     Proceed to payment

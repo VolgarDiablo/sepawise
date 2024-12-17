@@ -34,7 +34,7 @@ const Terms = ({ isVisible, onClose }) => {
 
   return (
     <div
-      className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-500 ${
+      className={`fixed inset-0 bg-custom-global-bg-modal bg-opacity-50 backdrop-blur-[10px] flex items-center justify-center z-50 transition-opacity duration-500 ${
         animateModal
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
@@ -42,7 +42,7 @@ const Terms = ({ isVisible, onClose }) => {
       onClick={onClose}
     >
       <div
-        className={`bg-white m-4 p-4 sm:pt-12 sm:pb-12 sm:pr-4 sm:pl-12 rounded-[8px] shadow-lg max-w-4xl relative overflow-hidden transform transition-transform duration-500 ${
+        className={`bg-custom-bg-card m-4 p-4 sm:pt-12 sm:pb-12 sm:pr-4 sm:pl-12 rounded-[8px] shadow-lg max-w-4xl relative overflow-hidden transform transition-transform duration-500 ${
           animateModal ? "scale-100" : "scale-95"
         }`}
         style={{ maxHeight: "calc(100% - 64px)" }}
@@ -78,11 +78,11 @@ const Terms = ({ isVisible, onClose }) => {
             stroke-linejoin="round"
           ></path>
         </svg>
-        <div>
-          <h2 className="font-medium text-xl leading-[1.6] pb-[24px] text-[#000000de]">
+        <div className="text-white">
+          <h2 className="font-medium text-xl leading-[1.6] pb-[24px]">
             SepaWise Terms and Conditions
           </h2>
-          <div className="text-[#00000090] leading-[1.6] font-normal text-[14px] max-h-[660px] sm:max-h-[625px] lg:max-h-[700px] overflow-y-auto pr-4 pb-8 custom-scrollbar">
+          <div className=" leading-[1.6] font-normal text-[14px] max-h-[660px] sm:max-h-[625px] lg:max-h-[700px] overflow-y-auto pr-4 pb-8 custom-scrollbar">
             <p className="mb-[14px] mt-[14px]">
               Before using the SepaWise service, the User must read the Terms
               and Conditions of the SepaWise service in their entirety. Using

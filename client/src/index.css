@@ -11,7 +11,7 @@ body {
   @apply font-inter box-border;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #263257;
+  background-color: #666a8c;
   font-family: "Inter", sans-serif;
 }
 
@@ -31,12 +31,13 @@ img {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #d3e1ee;
+  background-color: #8085b2;
   border-radius: 20px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
   background-color: #ebedf7;
+  border-radius: 20px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-button {

@@ -7,11 +7,16 @@ module.exports = {
         inter: ["Inter", "sans-serif"],
       },
       colors: {
-        "custom-tab-button-blue": "#263257",
+        "custom-border-tab-button": "#8b91c3",
         "custom-bg-tab-button": "rgba(78, 131, 185, 0.04)",
         "custom-main-text": "#f1f4f8",
-        "custom-bg-card": "#2A3760",
-        "custom-secondary-text": "#6b83a5",
+        "custom-bg-card": "#8085b2",
+        "custom-secondary-text": "#8b91c3",
+        "custom-not-active-text": "#b6b6b6",
+        "custom-not-active-button": "#b6b6b6",
+        "custom-active-button": "#757aa7",
+        "custom-bg-sidebar": "#455184",
+        "custom-global-bg-modal": "#313131",
       },
       boxShadow: {
         "custom-lang":
