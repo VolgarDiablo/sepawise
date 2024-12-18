@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { z } from "zod";
 import iconSepa from "../../assets/images/sepa.svg";
-import iconTehterTRC from "../../assets/images/tetherTRC.svg";
 import { NavLink } from "react-router-dom";
+import CurrencySelector from "../../components/Content/CurrencySelector";
 
 const schema = z.object({
   email: z.string().email("Wrong e-mail format").min(1, "Enter email"),
@@ -17,11 +17,17 @@ const schema = z.object({
       "Wrong @username"
     )
     .min(2, "Enter your @username"),
+  saleAmount: z
+    .number({ invalid_type_error: "Sale amount must be a number" })
+    .min(500, "Sale amount must be greater than 500")
+    .max(150000, "Sale amount must be less than 150 000"),
 });
 
 const Main = () => {
   const [selectedButtonBlockSell, setSelectedButtonBlockSell] = useState("All");
   const [selectedButtonBlockBuy, setSelectedButtonBlockBuy] = useState("All");
+  const [currencies, setCurrencies] = useState([]);
+  const [selectedCurrency, setSelectedCurrency] = useState(null);
 
   const handleClickBlockSell = (button) => {
     setSelectedButtonBlockSell(button);
@@ -71,7 +77,11 @@ const Main = () => {
     e.preventDefault();
 
     try {
-      schema.parse(formData);
+      const parsedFormData = {
+        ...formData,
+        saleAmount: Number(formData.saleAmount),
+      };
+      schema.parse(parsedFormData);
       setErrors({});
 
       const response = await fetch("http://localhost:5000/send-to-telegram", {
@@ -140,6 +150,39 @@ const Main = () => {
   const isBothChecked =
     checkboxState.checkboxTerms && checkboxState.checkboxAml;
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchCurrencies = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/currencies");
+        if (!response.ok) {
+          throw new Error("Ошибка при получении данных");
+        }
+        const data = await response.json();
+
+        if (isMounted) {
+          setCurrencies(data);
+        }
+        if (data.length > 0) {
+          setSelectedCurrency(data[0]);
+        }
+      } catch (error) {
+        console.error("Ошибка:", error);
+      }
+    };
+
+    fetchCurrencies();
+
+    return () => {
+      isMounted = false; // Очистка эффекта
+    };
+  }, []);
+
+  const handleCurrencySelect = useCallback((currency) => {
+    setSelectedCurrency(currency);
+  }, []);
+
   return (
     <div>
       <form onSubmit={isBothChecked ? handleSubmit : (e) => e.preventDefault()}>
@@ -201,7 +244,7 @@ const Main = () => {
                 </div>
                 <div className="opacity-100 grid grid-cols-3 gap-[4px] sm:gap-[14px] p-[10px] mt-[-10px] ml-[-10px] max-h-[450px] h-[130px] overflow-y-auto transition-height duration-300 ease-in-out sm:grid-cols-[repeat(5,1fr)] lg:h-[130px] lg:grid-cols-[repeat(6,1fr)]">
                   <div className="min-w-[100px max-w-[110px] w-auto sm:w-[120px] h-[110px] flex flex-col gap-[8px] p-[9px] justify-center items-center shadow-custom-button-currencie border-2 rounded-[8px] border-custom-border-tab-button">
-                    <div className="w-[28px] p-[2px]">
+                    <div className="w-[35px] p-[2px]">
                       <img src={iconSepa} alt="SEPA" />
                     </div>
                     <h5 className="font-semibold text-[12px] leading-[1.3] text-custom-main-text">
@@ -261,32 +304,21 @@ const Main = () => {
                       Currencies
                     </span>
                     {/* <div className="grid gap-[4px] grid-cols-[repeat(4,74px)] sm:gap-[8px]"> */}
-                    <div className="grid gap-[4px] grid-cols-[repeat(1,74px)] sm:gap-[8px]">
+                    <div className="grid gap-[4px] grid-cols-[repeat(2px)] sm:gap-[8px]">
                       <button
                         type="button"
                         className="rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab bg-custom-bg-card border-custom-border-tab-button border-2 text-custom-main-text"
                       >
-                        TRC20
+                        {selectedCurrency ? selectedCurrency.network : ""}
                       </button>
                     </div>
                   </div>
                 </div>
-                <div className="opacity-100 grid grid-cols-3 gap-[4px] sm:gap-[14px] p-[10px] mt-[-10px] ml-[-10px] max-h-[450px] h-[130px] overflow-y-auto transition-height duration-300 ease-in-out sm:grid-cols-[repeat(5,1fr)] lg:h-[130px] lg:grid-cols-[repeat(6,1fr)]">
-                  <div className="min-w-[100px max-w-[110px] w-auto sm:w-[120px] h-[110px] flex flex-col gap-[8px] p-[9px] justify-center items-center shadow-custom-button-currencie border-2 rounded-[8px] border-custom-border-tab-button">
-                    <div className="w-[28px] p-[2px]">
-                      <img src={iconTehterTRC} alt="Tehter TRC20" />
-                    </div>
-                    <h5 className="font-semibold text-[12px] leading-[1.3] text-custom-main-text">
-                      Tether
-                    </h5>
-                    <div className="flex flex-wrap gap-[3px] justify-center">
-                      <h5 className="font-semibold text-[12px] leading-[1.3] text-white">
-                        TRC20
-                      </h5>
-                    </div>
-                  </div>
-                </div>
               </div>
+              <CurrencySelector
+                currencies={currencies}
+                onCurrencySelect={handleCurrencySelect}
+              />
             </div>
 
             <div className="bg-custom-bg-card p-4 rounded-2xl shadow-custom-main flex flex-col gap-[32px] lg:row-start-3 lg:col-start-1  md:p-8">
@@ -294,8 +326,8 @@ const Main = () => {
                 Payment details
               </h1>
               <div className="grid gap-[16px] grid-cols-1 sm:grid-cols-2">
-                <div className="flex flex-col gap-[20px]">
-                  <h3 className="text-custom-main-text text-[16px] leading-[1.06] font-semibold">
+                <div className="flex flex-col ">
+                  <h3 className="text-custom-main-text text-[16px] leading-[1.06] font-semibold pb-5">
                     Sale amount SEPA
                   </h3>
                   <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
@@ -307,7 +339,6 @@ const Main = () => {
                       value={formData.saleAmount}
                       onChange={handleChange}
                       onBlur={handleBlurSaleAmount}
-                      required
                     />
                     <div className="pr-4">
                       <span className="text-[#b6b6b6] font-normal text-[14px]">
@@ -315,6 +346,11 @@ const Main = () => {
                       </span>
                     </div>
                   </div>
+                  {errors.saleAmount && (
+                    <p className="text-custom-text-error leading-[1.4] text-[12px] font-medium pt-1">
+                      {errors.saleAmount}
+                    </p>
+                  )}
                 </div>
                 <div className="flex flex-col gap-[20px]">
                   <h3 className="text-custom-main-text text-[16px] leading-[1.06] font-semibold">
@@ -332,7 +368,7 @@ const Main = () => {
                     />
                     <div className="pr-4">
                       <span className="text-[#b6b6b6] font-normal text-[14px]">
-                        TRC20
+                        {selectedCurrency ? selectedCurrency.network : ""}
                       </span>
                     </div>
                   </div>
@@ -355,9 +391,9 @@ const Main = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                       />
-                    </div>{" "}
+                    </div>
                     {errors.email && (
-                      <p className="text-[#b9634e] leading-[1.4] text-[12px] font-medium pt-1">
+                      <p className="text-custom-text-error leading-[1.4] text-[12px] font-medium pt-1">
                         {errors.email}
                       </p>
                     )}
@@ -376,7 +412,7 @@ const Main = () => {
                       />
                     </div>
                     {errors.tgUsername && (
-                      <p className="text-[#b9634e] leading-[1.4] text-[12px] font-medium pt-1">
+                      <p className="text-custom-text-error leading-[1.4] text-[12px] font-medium pt-1">
                         {errors.tgUsername}
                       </p>
                     )}
@@ -387,7 +423,9 @@ const Main = () => {
                       <input
                         name="wallet"
                         className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
-                        placeholder="Tether TRC-20 address"
+                        placeholder={`${
+                          selectedCurrency ? selectedCurrency.network : ""
+                        } address`}
                         type="text"
                         value={formData.wallet}
                         onChange={handleChange}
@@ -395,7 +433,7 @@ const Main = () => {
                       />
                     </div>
                     {errors.wallet && (
-                      <p className="text-[#b9634e] leading-[1.4] text-[12px] font-medium pt-1">
+                      <p className="text-custom-text-error leading-[1.4] text-[12px] font-medium pt-1">
                         {errors.wallet}
                       </p>
                     )}
@@ -408,43 +446,43 @@ const Main = () => {
               <span className="font-normal text-[12px] leading-[1.6] ">
                 Do you want to buy
               </span>
-              <p className="font-normal text-[32px] leading-[1.06]  relative w-fit m-0 mt-[10px]">
-                {formData.purchaseAmount || "0"} USDT
-                <div className="text-[12px] font-semibold leading-[1.06]   absolute right-0 top-[-12px]">
-                  TRC20
-                </div>
+              <p className="font-normal text-[32px] leading-[1.06]  w-fit m-0">
+                {formData.purchaseAmount || "0"}{" "}
+                {selectedCurrency ? selectedCurrency.network : ""}
               </p>
-              <div className="mt-[23px] grid sm:grid-cols-4 lg:grid-cols-2   gap-4">
-                <div className="flex flex-col cursor-pointer gap-[7px]">
+              <div className="mt-[23px] grid sm:grid-cols-4 lg:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-[7px]">
                   <span className="font-normal text-[12px] leading-[1.6] ">
                     Rate:
                   </span>
                   <span className="font-bold text-[12px] leading-[1.2] ">
-                    1.02 EUR = 1 USDT
+                    1.02 EUR = 1{" "}
+                    {selectedCurrency ? selectedCurrency.network : ""}
                   </span>
                 </div>
-                <div className="flex flex-col cursor-pointer gap-[7px]">
+                <div className="flex flex-col gap-[7px]">
                   <span className="font-normal text-[12px] leading-[1.6] ">
                     Reserve:
                   </span>
                   <span className="font-bold text-[12px] leading-[1.2] ">
-                    123123
+                    {selectedCurrency ? selectedCurrency.reserve : ""}{" "}
+                    {selectedCurrency ? selectedCurrency.network : ""}
                   </span>
                 </div>
-                <div className="flex flex-col cursor-pointer gap-[7px]">
+                <div className="flex flex-col  gap-[7px]">
                   <span className="font-normal text-[12px] leading-[1.6] ">
                     Min amount:
                   </span>
                   <span className="font-bold text-[12px] leading-[1.2] ">
-                    123123
+                    {selectedCurrency ? selectedCurrency.minAmount : ""} EUR
                   </span>
                 </div>
-                <div className="flex flex-col cursor-pointer gap-[7px]">
+                <div className="flex flex-col gap-[7px]">
                   <span className="font-normal text-[12px] leading-[1.6] ">
                     Max amount:
                   </span>
                   <span className="font-bold text-[12px] leading-[1.2] ">
-                    123123
+                    {selectedCurrency ? selectedCurrency.maxAmount : ""} EUR
                   </span>
                 </div>
               </div>
@@ -547,7 +585,7 @@ const Main = () => {
                       >
                         I agree with
                         <NavLink
-                          to="/rules/aml-kyc"
+                          to="/rules/aml"
                           target="_blank"
                           className="text-custom-secondary-text font-bold"
                         >

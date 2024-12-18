@@ -5,6 +5,7 @@ import Cookie from "./Components/Cookie/Cookie";
 import Policy from "./Components/Policy/Policy";
 import Aml from "./Components/Aml/Aml";
 import NotFound from "../../pages/NotFound/NotFound";
+import SetTitle from "../../components/utils/SetTitle";
 
 const Rules = () => {
   return (
@@ -21,9 +22,7 @@ const Rules = () => {
                 <NavLink
                   to="terms"
                   className={({ isActive }) =>
-                    isActive
-                      ? "text-custom-active-text-navigation-rules font-bold"
-                      : ""
+                    isActive ? "text-custom-active-text-navigation-rules " : ""
                   }
                 >
                   Terms and Conditions
@@ -33,9 +32,7 @@ const Rules = () => {
                 <NavLink
                   to="cookie"
                   className={({ isActive }) =>
-                    isActive
-                      ? "text-custom-active-text-navigation-rules font-bold"
-                      : ""
+                    isActive ? "text-custom-active-text-navigation-rules " : ""
                   }
                 >
                   Cookie Use Agreement
@@ -45,9 +42,7 @@ const Rules = () => {
                 <NavLink
                   to="policy"
                   className={({ isActive }) =>
-                    isActive
-                      ? "text-custom-active-text-navigation-rules font-bold"
-                      : ""
+                    isActive ? "text-custom-active-text-navigation-rules " : ""
                   }
                 >
                   Personal Data Processing Policy
@@ -57,9 +52,7 @@ const Rules = () => {
                 <NavLink
                   to="aml"
                   className={({ isActive }) =>
-                    isActive
-                      ? "text-custom-active-text-navigation-rules font-bold"
-                      : ""
+                    isActive ? "text-custom-active-text-navigation-rules " : ""
                   }
                 >
                   AML/KYC
@@ -69,14 +62,62 @@ const Rules = () => {
           </nav>
 
           {/* Основной контент */}
-          <div className=" bg-custom-bg-card text-custom-main-text p-8 rounded-[12px] shadow-md">
+          <div className="bg-custom-bg-card text-custom-main-text p-8 rounded-[12px] shadow-md">
             <Routes>
-              <Route index element={<Navigate to="terms" replace />} />
-              <Route path="terms" element={<Terms />} />
-              <Route path="cookie" element={<Cookie />} />
-              <Route path="policy" element={<Policy />} />
-              <Route path="aml" element={<Aml />} />
-              <Route path="*" element={<NotFound />} />
+              <Route
+                index
+                element={
+                  <>
+                    <SetTitle title="Sepa Wise | Terms and Conditions" />
+                    <Navigate to="terms" replace />
+                  </>
+                }
+              />
+              <Route
+                path="terms"
+                element={
+                  <>
+                    <SetTitle title="Sepa Wise | Terms and Conditions" />
+                    <Terms />
+                  </>
+                }
+              />
+              <Route
+                path="cookie"
+                element={
+                  <>
+                    <SetTitle title="Sepa Wise | Cookie Use Agreement" />
+                    <Cookie />
+                  </>
+                }
+              />
+              <Route
+                path="policy"
+                element={
+                  <>
+                    <SetTitle title="Sepa Wise | Personal Data Processing Policy" />
+                    <Policy />
+                  </>
+                }
+              />
+              <Route
+                path="aml"
+                element={
+                  <>
+                    <SetTitle title="Sepa Wise | AML/KYC Procedure" />
+                    <Aml />
+                  </>
+                }
+              />
+              <Route
+                path="*"
+                element={
+                  <>
+                    <SetTitle title="Page Not Found" />
+                    <NotFound />
+                  </>
+                }
+              />
             </Routes>
           </div>
         </div>

@@ -19,6 +19,7 @@ module.exports = {
         "custom-global-bg-modal": "#313131",
         "custom-bg-card-aml": "#7F859C",
         "custom-active-text-navigation-rules": "#BFC3FF",
+        "custom-text-error": "#BFC3FF",
       },
       boxShadow: {
         "custom-lang":
