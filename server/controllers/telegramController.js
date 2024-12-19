@@ -3,7 +3,7 @@ import { sendTelegramMessage } from "../services/telegramService.js";
 export const sendToTelegram = async (req, res) => {
   try {
     const { saleAmount, purchaseAmount, email, tgUsername, wallet } = req.body;
-
+    console.log("Получены данные:", req.body);
     if (!saleAmount || !purchaseAmount || !tgUsername || !email || !wallet) {
       return res
         .status(400)

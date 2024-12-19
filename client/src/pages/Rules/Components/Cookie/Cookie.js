@@ -9,12 +9,13 @@ const Cookie = () => {
       </h1>
       <div className="flex flex-col gap-[14px] text-[14px] font-normal leading-[22px]">
         <p>
-          The exbit.cc website (hereinafter referred to as the “Website”) uses
-          cookies and similar technologies to ensure the best user experience by
-          providing personalized information, remembering preferences when
-          navigating and visiting the Website, and helping to get the
-          information the user needs. The information we receive through cookies
-          helps us provide you with our services in the way that suits you best.
+          The sepawise.com website (hereinafter referred to as the “Website”)
+          uses cookies and similar technologies to ensure the best user
+          experience by providing personalized information, remembering
+          preferences when navigating and visiting the Website, and helping to
+          get the information the user needs. The information we receive through
+          cookies helps us provide you with our services in the way that suits
+          you best.
         </p>
         <p>
           This agreement concerns the Website's use of information received from

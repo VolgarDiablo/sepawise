@@ -7,7 +7,7 @@ import Cookie from "../../pages/Rules/Components/Cookie/Cookie";
 import Policy from "../../pages/Rules/Components/Policy/Policy";
 import Aml from "../../pages/Rules/Components/Aml/Aml";
 import NotFound from "../../pages/NotFound/NotFound";
-import SetTitle from "../utils/SetTitle";
+import SetTitle from "../../utils/SetTitle";
 
 const Content = () => {
   return (

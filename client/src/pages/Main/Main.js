@@ -1,33 +1,52 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { z } from "zod";
 import iconSepa from "../../assets/images/sepa.svg";
 import { NavLink } from "react-router-dom";
-import CurrencySelector from "../../components/Content/CurrencySelector";
-
-const schema = z.object({
-  email: z.string().email("Wrong e-mail format").min(1, "Enter email"),
-  wallet: z
-    .string()
-    .regex(/^T[0-9A-HJ-NP-Za-km-z]{33}$/, "Wrong Tether TRC-20 address format")
-    .min(1, "You must fill in this field"),
-  tgUsername: z
-    .string()
-    .regex(
-      /^@(?!(?:.*__|_$))[a-zA-Z0-9](?:[a-zA-Z0-9_]{3,30}[a-zA-Z0-9])?$/,
-      "Wrong @username"
-    )
-    .min(2, "Enter your @username"),
-  saleAmount: z
-    .number({ invalid_type_error: "Sale amount must be a number" })
-    .min(500, "Sale amount must be greater than 500")
-    .max(150000, "Sale amount must be less than 150 000"),
-});
+import CurrencySelector from "../../components/CurrencySelector/CurrencySelector";
 
 const Main = () => {
   const [selectedButtonBlockSell, setSelectedButtonBlockSell] = useState("All");
   const [selectedButtonBlockBuy, setSelectedButtonBlockBuy] = useState("All");
   const [currencies, setCurrencies] = useState([]);
   const [selectedCurrency, setSelectedCurrency] = useState(null);
+  const [rates, setRates] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Показывать модалку?
+  const [lastActivityTime, setLastActivityTime] = useState(Date.now()); // Последнее время активности
+
+  const getWalletRegex = (network) => {
+    switch (network) {
+      case "BTC":
+        return /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/;
+      case "XMR":
+        return /^[48][0-9AB][1-9A-HJ-NP-Za-km-z]{93}$/;
+      case "USDT (TRC20)":
+      default:
+        return /^T[0-9A-HJ-NP-Za-km-z]{33}$/;
+    }
+  };
+
+  const validateSchema = (data, network) => {
+    const schema = z.object({
+      email: z.string().email("Wrong e-mail format").min(1, "Enter email"),
+      wallet: z
+        .string()
+        .regex(getWalletRegex(network), `Wrong ${network} address format`)
+        .min(1, "You must fill in this field"),
+      tgUsername: z
+        .string()
+        .regex(
+          /^@(?!(?:.*__|_$))[a-zA-Z0-9](?:[a-zA-Z0-9_]{3,30}[a-zA-Z0-9])?$/,
+          "Wrong @username"
+        )
+        .min(2, "Enter your @username"),
+      saleAmount: z
+        .number({ invalid_type_error: "Sale amount must be a number" })
+        .min(500, "Sale amount must be greater than 500")
+        .max(150000, "Sale amount must be less than 150 000"),
+    });
+
+    return schema.parse(data);
+  };
 
   const handleClickBlockSell = (button) => {
     setSelectedButtonBlockSell(button);
@@ -61,18 +80,6 @@ const Main = () => {
     }));
   };
 
-  const handleBlurSaleAmount = () => {
-    const saleAmount = parseFloat(formData.saleAmount);
-    if (!isNaN(saleAmount)) {
-      // Расчет purchaseAmount: 1.02 EUR = 1 USDT, вычитаем 4% комиссии
-      const purchaseAmount = ((saleAmount / 1.02) * 0.96).toFixed(2);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        purchaseAmount,
-      }));
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -81,16 +88,22 @@ const Main = () => {
         ...formData,
         saleAmount: Number(formData.saleAmount),
       };
-      schema.parse(parsedFormData);
+
+      // Проверка схемы валидации с текущей сетью
+      validateSchema(parsedFormData, selectedCurrency.network);
+
       setErrors({});
 
-      const response = await fetch("http://localhost:5000/send-to-telegram", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `http://localhost:5000/telegram/send-to-telegram`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: JSON.stringify(parsedFormData),
+        }
+      );
 
       const result = await response.json();
 
@@ -112,25 +125,31 @@ const Main = () => {
           newErrors[error.path[0]] = error.message;
         });
         setErrors(newErrors);
-      } else {
-        console.log("Произошла ошибка при отправке данных.");
       }
     }
   };
 
   const handleBlur = (e) => {
     const { name } = e.target;
+
     try {
-      schema.pick({ [name]: true }).parse({ [name]: formData[name] });
+      const schema = z.object({
+        [name]: z
+          .string()
+          .regex(
+            name === "wallet" ? getWalletRegex(selectedCurrency.network) : /.*/,
+            `Wrong ${selectedCurrency.network} address format`
+          )
+          .min(1, "This field is required"),
+      });
+
+      schema.parse({ [name]: formData[name] });
       setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
     } catch (err) {
-      const firstError = err.errors.find((error) => error.path[0] === name);
-      if (firstError) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          [name]: firstError.message,
-        }));
-      }
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: err.errors[0]?.message || "Invalid input",
+      }));
     }
   };
 
@@ -150,12 +169,42 @@ const Main = () => {
   const isBothChecked =
     checkboxState.checkboxTerms && checkboxState.checkboxAml;
 
+  const lastFetchTimeRef = useRef(0); // Выносим useRef из useCallback
+
+  //запрос на курс монет
+  const fetchRates = useCallback(async () => {
+    const now = Date.now();
+
+    // Пропускаем запрос, если с последнего прошло меньше 15 минут
+    if (now - lastFetchTimeRef.current < 15 * 60 * 1000) {
+      console.log("Пропускаем запрос: данные еще актуальны.");
+      return;
+    }
+    lastFetchTimeRef.current = now; // Обновляем значение
+
+    try {
+      const response = await fetch("http://localhost:5000/prices/currencies");
+      const contentType = response.headers.get("content-type");
+      const text = await response.text();
+
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Expected JSON, got something else");
+      }
+      const data = JSON.parse(text);
+      setRates(data);
+      setLastActivityTime(Date.now());
+    } catch (error) {
+      console.error("Error fetching rates:", error);
+    }
+  }, []); // Зависимости остаются пустыми
+
+  //рендеринг монет во 2-ой карточке
   useEffect(() => {
     let isMounted = true;
 
     const fetchCurrencies = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/currencies");
+        const response = await fetch(`http://localhost:5000/currencies/list`);
         if (!response.ok) {
           throw new Error("Ошибка при получении данных");
         }
@@ -173,15 +222,77 @@ const Main = () => {
     };
 
     fetchCurrencies();
+    fetchRates(); // Безопасно вызываем `fetchRates`
 
     return () => {
-      isMounted = false; // Очистка эффекта
+      isMounted = false;
     };
-  }, []);
+  }, [fetchRates]); // Указываем `fetchRates` как зависимость
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchRates();
+    }, 15 * 60 * 1000); // Каждые 15 минут
+
+    return () => clearInterval(interval);
+  }, [fetchRates]); // Указываем `fetchRates` как зависимость
 
   const handleCurrencySelect = useCallback((currency) => {
     setSelectedCurrency(currency);
+
+    // Очистка всех ошибок
+    setErrors({});
   }, []);
+
+  const getExchangeRate = () => {
+    if (!rates || !selectedCurrency) {
+      return null;
+    }
+
+    const currencyKey = `EUR${selectedCurrency.network
+      .split(" ")[0]
+      .toUpperCase()}`;
+
+    const rate = rates[currencyKey];
+    return rate ? `${rate} ${selectedCurrency.network}` : "Курс недоступен";
+  };
+
+  useEffect(() => {
+    const handleUserActivity = () => {
+      setLastActivityTime(Date.now());
+      setIsModalOpen(false);
+    };
+
+    window.addEventListener("mousemove", handleUserActivity);
+    window.addEventListener("keydown", handleUserActivity);
+
+    const interval = setInterval(() => {
+      const timeSinceLastActivity = Date.now() - lastActivityTime;
+      if (timeSinceLastActivity > 15 * 60 * 1000) {
+        setIsModalOpen(true);
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("mousemove", handleUserActivity);
+      window.removeEventListener("keydown", handleUserActivity);
+    };
+  }, [lastActivityTime]);
+
+  const handleBlurSaleAmount = () => {
+    const saleAmount = parseFloat(formData.saleAmount);
+    const rate = getExchangeRate(); // Получаем текущий курс, например "0.97 USDT"
+
+    if (!isNaN(saleAmount) && rate) {
+      const numericRate = parseFloat(rate.split(" ")[0]); // Извлекаем числовую часть курса
+      const purchaseAmount = (saleAmount * numericRate * 0.96).toFixed(2); // Умножаем на курс и округляем
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        purchaseAmount,
+      }));
+    }
+  };
 
   return (
     <div>
@@ -456,8 +567,7 @@ const Main = () => {
                     Rate:
                   </span>
                   <span className="font-bold text-[12px] leading-[1.2] ">
-                    1.02 EUR = 1{" "}
-                    {selectedCurrency ? selectedCurrency.network : ""}
+                    1 EUR = {getExchangeRate()}
                   </span>
                 </div>
                 <div className="flex flex-col gap-[7px]">
@@ -614,6 +724,15 @@ const Main = () => {
           </main>
         </div>
       </form>
+      {/* Модалка */}
+      {isModalOpen && (
+        <div className="modal">
+          <p>Курс устарел. Перезагрузите сайт.</p>
+          <button onClick={() => window.location.reload()}>
+            Перезагрузить страницу
+          </button>
+        </div>
+      )}
     </div>
   );
 };

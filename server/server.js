@@ -3,11 +3,11 @@ import cors from "cors";
 import path from "path";
 import config from "./config/config.js";
 import telegramRoutes from "./routes/telegramRoutes.js";
-import coinRoutes from "./routes/coinRoutes.js";
+import coinRoutes from "./routes/currencyRoutes.js";
+import priceRoutes from "./routes/priceRoutes.js";
 
 const app = express();
 
-// Middleware
 app.use(
   cors({
     origin: config.CORS_ORIGIN,
@@ -18,11 +18,11 @@ app.use(express.json());
 const __dirname = path.resolve();
 app.use("/public", express.static(path.join(__dirname, "public")));
 
-// Routes
-app.use("/api", telegramRoutes);
-app.use("/api", coinRoutes);
+// Настраиваем уникальные базовые пути для маршрутов
+app.use("/telegram", telegramRoutes);
+app.use("/currencies", coinRoutes);
+app.use("/prices", priceRoutes);
 
-// Запуск сервера
 app.listen(config.PORT, () => {
   console.log(`Сервер запущен на http://localhost:${config.PORT}`);
 });
