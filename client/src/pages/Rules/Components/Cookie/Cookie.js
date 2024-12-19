@@ -1,5 +1,4 @@
 import React from "react";
-import "./Cookie.css";
 
 const Cookie = () => {
   return (
@@ -29,7 +28,7 @@ const Cookie = () => {
           about the user navigation on the Internet website. Cookies store
           information about your Internet preferences.
         </p>
-        <p>
+        <div>
           Cookies are intended for a variety of purposes, including to:
           <ul className="list-disc ml-10 mt-[14px]">
             <li>
@@ -47,7 +46,7 @@ const Cookie = () => {
               our audience.
             </li>
           </ul>
-        </p>
+        </div>
         <p>
           Before the Website installs cookies on your computer, a pop-up window
           will prompt you to consent to the installation thereof. By consenting

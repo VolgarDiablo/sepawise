@@ -1,11 +1,11 @@
 import React from "react";
-import { Routes, Route, NavLink, Navigate } from "react-router-dom";
+import { NavLink, Routes, Route, Navigate } from "react-router-dom";
 import Terms from "./Components/Terms/Terms";
 import Cookie from "./Components/Cookie/Cookie";
 import Policy from "./Components/Policy/Policy";
 import Aml from "./Components/Aml/Aml";
 import NotFound from "../../pages/NotFound/NotFound";
-import SetTitle from "../../components/utils/SetTitle";
+import SetTitle from "../../utils/SetTitle";
 
 const Rules = () => {
   return (
@@ -16,13 +16,13 @@ const Rules = () => {
         </h2>
         <div className="grid gap-8 md:grid-flow-col">
           {/* Боковая панель */}
-          <nav className="">
+          <nav>
             <ul className="flex flex-col gap-6 max-w-[345px] items-start">
               <li>
                 <NavLink
-                  to="terms"
+                  to="/rules/terms"
                   className={({ isActive }) =>
-                    isActive ? "text-custom-active-text-navigation-rules " : ""
+                    isActive ? "text-custom-active-text-navigation-rules" : ""
                   }
                 >
                   Terms and Conditions
@@ -30,9 +30,9 @@ const Rules = () => {
               </li>
               <li>
                 <NavLink
-                  to="cookie"
+                  to="/rules/cookie"
                   className={({ isActive }) =>
-                    isActive ? "text-custom-active-text-navigation-rules " : ""
+                    isActive ? "text-custom-active-text-navigation-rules" : ""
                   }
                 >
                   Cookie Use Agreement
@@ -40,9 +40,9 @@ const Rules = () => {
               </li>
               <li>
                 <NavLink
-                  to="policy"
+                  to="/rules/policy"
                   className={({ isActive }) =>
-                    isActive ? "text-custom-active-text-navigation-rules " : ""
+                    isActive ? "text-custom-active-text-navigation-rules" : ""
                   }
                 >
                   Personal Data Processing Policy
@@ -50,9 +50,9 @@ const Rules = () => {
               </li>
               <li>
                 <NavLink
-                  to="aml"
+                  to="/rules/aml"
                   className={({ isActive }) =>
-                    isActive ? "text-custom-active-text-navigation-rules " : ""
+                    isActive ? "text-custom-active-text-navigation-rules" : ""
                   }
                 >
                   AML/KYC
@@ -64,15 +64,6 @@ const Rules = () => {
           {/* Основной контент */}
           <div className="bg-custom-bg-card text-custom-main-text p-8 rounded-[12px] shadow-md">
             <Routes>
-              <Route
-                index
-                element={
-                  <>
-                    <SetTitle title="Sepa Wise | Terms and Conditions" />
-                    <Navigate to="terms" replace />
-                  </>
-                }
-              />
               <Route
                 path="terms"
                 element={
@@ -109,15 +100,8 @@ const Rules = () => {
                   </>
                 }
               />
-              <Route
-                path="*"
-                element={
-                  <>
-                    <SetTitle title="Page Not Found" />
-                    <NotFound />
-                  </>
-                }
-              />
+              <Route index element={<Navigate to="/rules/terms" replace />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
         </div>
