@@ -1,7 +1,6 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
   "type": "module",
   "main": "server.js",
   "scripts": {
@@ -19,5 +18,7 @@
     "express": "^4.21.2",
     "node-cache": "^5.1.2",
     "node-fetch": "^3.3.2"
-  }
+  },
+  "devDependencies": {},
+  "description": ""
 }

@@ -10,7 +10,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: config.CORS_ORIGIN,
+    origin: ["https://sepawise.com", "http://localhost:3000"],
   })
 );
 app.use(express.json());

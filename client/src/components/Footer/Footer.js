@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import bestchange from "../../assets/images/bestchange.png";
-import useModal from "../../hooks/useModall";
+// import bestchange from "../../assets/images/bestchange.png";
+// import useModal from "../../hooks/useModall";
 import CopiedNotification from "../../components/Notification/Copied/CopiedNotification";
-import ModalTerms from "../../components/Modal/Terms/Terms";
+// import ModalTerms from "../../components/Modal/Terms/Terms";
 
 const Footer = () => {
   const [isCopiedVisible, setIsCopiedVisible] = useState(false);
-  const { isModalVisible, openModal, closeModal } = useModal();
+  // const { isModalVisible, openModal, closeModal } = useModal();
 
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -31,14 +31,14 @@ const Footer = () => {
       <div className="flex items-center justify-center ">
         <div className="flex justify-between items-start max-w-[1200px] mx-auto w-full py-5 gap-4 pt-8 pb-8 flex-col-reverse pl-4 pr-4 sm:flex-row">
           <div
-            className="font-normal text-[12px] leading-[1.6] text-white cursor-pointer"
-            onClick={openModal}
+            className="font-normal text-[12px] leading-[1.6] text-white"
+            // onClick={openModal}
           >
             Terms of Exchange
           </div>
-          <div>
+          {/* <div>
             <img src={bestchange} alt="BestChange" />
-          </div>
+          </div> */}
           <div className="cursor-pointer" onClick={handleOpenTelegram}>
             <svg
               width="32"
@@ -83,7 +83,7 @@ const Footer = () => {
         </div>
       </div>
       <CopiedNotification isVisible={isCopiedVisible} />
-      <ModalTerms isVisible={isModalVisible} onClose={closeModal} />
+      {/* <ModalTerms isVisible={isModalVisible} onClose={closeModal} /> */}
     </div>
   );
 };

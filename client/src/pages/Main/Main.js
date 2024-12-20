@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { z } from "zod";
 import iconSepa from "../../assets/images/sepa.svg";
-import { NavLink } from "react-router-dom";
+// import { NavLink } from "react-router-dom";
 import CurrencySelector from "../../components/CurrencySelector/CurrencySelector";
 
 const Main = () => {
@@ -10,7 +10,6 @@ const Main = () => {
   const [currencies, setCurrencies] = useState([]);
   const [selectedCurrency, setSelectedCurrency] = useState(null);
   const [rates, setRates] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Показывать модалку?
   const [lastActivityTime, setLastActivityTime] = useState(Date.now()); // Последнее время активности
 
   const getWalletRegex = (network) => {
@@ -260,21 +259,12 @@ const Main = () => {
   useEffect(() => {
     const handleUserActivity = () => {
       setLastActivityTime(Date.now());
-      setIsModalOpen(false);
     };
 
     window.addEventListener("mousemove", handleUserActivity);
     window.addEventListener("keydown", handleUserActivity);
 
-    const interval = setInterval(() => {
-      const timeSinceLastActivity = Date.now() - lastActivityTime;
-      if (timeSinceLastActivity > 15 * 60 * 1000) {
-        setIsModalOpen(true);
-      }
-    }, 1000);
-
     return () => {
-      clearInterval(interval);
       window.removeEventListener("mousemove", handleUserActivity);
       window.removeEventListener("keydown", handleUserActivity);
     };
@@ -297,7 +287,7 @@ const Main = () => {
   return (
     <div>
       <form onSubmit={isBothChecked ? handleSubmit : (e) => e.preventDefault()}>
-        <div className="flex items-center justify-center pt-[16px] pb-[32px]">
+        <div className="flex items-center justify-center pb-[32px]">
           <main className="grid gap-[30px] max-w-[1200px] w-full grid-cols-1 lg:grid-cols-[1fr_370px] items-start">
             <div className="bg-custom-bg-card p-4 rounded-2xl shadow-custom-main flex flex-col gap-[24px] lg:row-start-1 lg:col-start-1 md:p-8">
               <h1 className="text-custom-main-text text-[24px] leading-[1.3] font-semibold">
@@ -599,11 +589,8 @@ const Main = () => {
             </div>
 
             <div className=" lg:row-start-4 lg:col-span-1">
-              <div className="grid gap-[16px] grid-cols-1 sm:grid-cols-[1fr_minmax(200px,_280px)]">
-                <div className="bg-[#E7EEF5] rounded-[10px] px-[24px] py-[18px] leading-[1.3] h-max text-[12px] ">
-                  KYC procedure in progress
-                </div>
-                <div className="grid grid-cols-1 gap-[16px]">
+              <div className="grid gap-[16px] grid-cols-1 ">
+                <div className="grid grid-cols-1 sm:grid-cols-[1fr_minmax(200px,_280px)] gap-[16px]">
                   <div className="flex flex-col gap-2">
                     {/* Первый чекбокс */}
                     <label className="inline-flex items-center cursor-pointer">
@@ -644,14 +631,18 @@ const Main = () => {
                         }`}
                       >
                         I agree with personal data processing and accept
-                        <NavLink
+                        {/* <NavLink
                           to="/rules/terms"
                           target="_blank"
                           className="text-custom-secondary-text font-bold"
                         >
                           {" "}
                           exchange terms
-                        </NavLink>
+                        </NavLink> */}
+                        <span className="text-custom-secondary-text font-bold">
+                          {" "}
+                          exchange terms
+                        </span>
                       </span>
                     </label>
 
@@ -694,14 +685,18 @@ const Main = () => {
                         }`}
                       >
                         I agree with
-                        <NavLink
+                        {/* <NavLink
                           to="/rules/aml"
                           target="_blank"
                           className="text-custom-secondary-text font-bold"
                         >
                           {" "}
                           the KYC and AML procedure
-                        </NavLink>
+                        </NavLink> */}
+                        <span className="text-custom-secondary-text font-bold">
+                          {" "}
+                          the KYC and AML procedure
+                        </span>
                       </span>
                     </label>
                   </div>
@@ -724,15 +719,6 @@ const Main = () => {
           </main>
         </div>
       </form>
-      {/* Модалка */}
-      {isModalOpen && (
-        <div className="modal">
-          <p>Курс устарел. Перезагрузите сайт.</p>
-          <button onClick={() => window.location.reload()}>
-            Перезагрузить страницу
-          </button>
-        </div>
-      )}
     </div>
   );
 };
