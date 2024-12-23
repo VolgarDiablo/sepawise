@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Main from "../../pages/Main/Main";
-import Rules from "../../pages/Rules/Rules";
+// import Rules from "../../pages/Rules/Rules";
 import NotFound from "../../pages/NotFound/NotFound";
 import SetTitle from "../../utils/SetTitle";
 
@@ -17,7 +17,7 @@ const Content = () => {
           </>
         }
       />
-      <Route
+      {/* <Route
         path="rules/*"
         element={
           <>
@@ -25,7 +25,7 @@ const Content = () => {
             <Rules />
           </>
         }
-      />
+      /> */}
       <Route
         path="*"
         element={

@@ -1,5 +1,5 @@
 import { getAllPrices } from "../services/coingeckoService.js";
-import { setCache, getCache } from "../utils/cache.js";
+import cache, { getCache, setCache } from "../utils/cache.js";
 
 const roundUp = (value, significantDigits) => {
   if (value === 0) return 0;
@@ -10,65 +10,137 @@ const roundUp = (value, significantDigits) => {
   return Math.ceil(value * multiplier) / multiplier;
 };
 
+const calculateExchangeRate = (baseCurrency, targetCurrency, prices) => {
+  const baseToUSD = prices[`${baseCurrency.toUpperCase()}USD`]?.price;
+  const targetToUSD = prices[`${targetCurrency.toUpperCase()}USD`]?.price;
+
+  if (!baseToUSD || !targetToUSD) {
+    console.warn(
+      `Missing price data for ${baseCurrency} or ${targetCurrency} relative to USD.`
+    );
+    return null;
+  }
+
+  return roundUp(baseToUSD / targetToUSD, 6);
+};
+
 export const getCurrencyPrices = async (req, res) => {
   try {
-    const symbols = ["EURUSDT", "EURBTC", "EURXMR"];
     const prices = {};
     const now = Date.now();
 
-    const cacheMissed = [];
-    for (const symbol of symbols) {
-      const cachedPrice = getCache(symbol);
-      if (cachedPrice) {
-        try {
-          const { price, timestamp } = JSON.parse(cachedPrice);
-          if (now - timestamp < 15 * 60 * 1000) {
-            console.log(`[CACHE-HIT] ${symbol}: ${price}`);
-            prices[symbol] = price;
-            continue;
+    // Check lastFetchTime in the cache
+    const lastFetchTime = getCache("lastFetchTime");
+    if (lastFetchTime) {
+      const lastTimestamp = JSON.parse(lastFetchTime).timestamp;
+      if (now - lastTimestamp < 5 * 60 * 1000) {
+        console.log(
+          `Data is still fresh. Last fetched at ${new Date(
+            lastTimestamp
+          ).toLocaleString()}`
+        );
+
+        // Return cached data
+        const cachedPrices = {};
+        const allCachedKeys = cache.keys(); // Get all cached keys
+        for (const key of allCachedKeys) {
+          if (key !== "lastFetchTime") {
+            const value = getCache(key);
+            if (value) {
+              cachedPrices[key] = JSON.parse(value);
+            }
           }
-        } catch (err) {
-          console.error(
-            `[CACHE-ERROR] Invalid cache for ${symbol}:`,
-            err.message
-          );
+        }
+
+        res.json({
+          prices: cachedPrices,
+          timestamp: lastTimestamp,
+        });
+        return; // Exit if data is fresh
+      }
+    }
+
+    // Fetch new prices from the API
+    const fetchedPrices = await getAllPrices();
+
+    if (!fetchedPrices) {
+      throw new Error("Fetched prices are undefined");
+    }
+
+    // Save fetched prices into the cache
+    for (const [currency, data] of Object.entries(fetchedPrices)) {
+      if (currency.toLowerCase() === "tether") continue; // Skip Tether
+
+      if (data.usd) {
+        const usdPrice = roundUp(data.usd, 6);
+        const cacheKey = `${currency.toUpperCase()}USD`;
+        const cachedValue = {
+          price: usdPrice,
+          timestamp: now,
+          source: "coingecko",
+        };
+        setCache(cacheKey, JSON.stringify(cachedValue));
+        prices[cacheKey] = cachedValue;
+      }
+      if (data.eur) {
+        const eurPrice = roundUp(data.eur, 6);
+        const cacheKey = `${currency.toUpperCase()}EUR`;
+        const cachedValue = {
+          price: eurPrice,
+          timestamp: now,
+          source: "coingecko",
+        };
+        setCache(cacheKey, JSON.stringify(cachedValue));
+        prices[cacheKey] = cachedValue;
+      }
+    }
+
+    // Set fixed value for TETHERUSD
+    if (!prices["TETHERUSD"]) {
+      const tetherFixed = { price: 1, timestamp: now, source: "fixed" };
+      setCache("TETHERUSD", JSON.stringify(tetherFixed));
+      prices["TETHERUSD"] = tetherFixed;
+    }
+
+    // Calculate missing pairs
+    const currencyPairs = [
+      ["bitcoin", "monero"],
+      ["monero", "bitcoin"],
+    ];
+
+    for (const [base, target] of currencyPairs) {
+      const pairKey = `${base.toUpperCase()}${target.toUpperCase()}`;
+      const reversePairKey = `${target.toUpperCase()}${base.toUpperCase()}`;
+
+      if (!prices[pairKey]) {
+        const rate = calculateExchangeRate(base, target, prices);
+        if (rate !== null) {
+          prices[pairKey] = {
+            price: rate,
+            timestamp: now,
+            source: "calculated",
+          };
+          setCache(pairKey, JSON.stringify(prices[pairKey]));
         }
       }
-      cacheMissed.push(symbol);
-    }
 
-    if (cacheMissed.length > 0) {
-      console.log(`[CACHE-MISS] Fetching data for: ${cacheMissed.join(", ")}`);
-      const fetchedPrices = await getAllPrices();
-
-      if (fetchedPrices.EURUSDT) {
-        const eurusdt = roundUp(parseFloat(fetchedPrices.EURUSDT), 2);
-        const cachedValue = { price: eurusdt, timestamp: now };
-        setCache("EURUSDT", JSON.stringify(cachedValue));
-        prices["EURUSDT"] = eurusdt;
-        console.log(`[CACHE-UPDATED] EURUSDT: ${eurusdt}`);
-      }
-
-      if (fetchedPrices.BTCEUR) {
-        const eurbtc = roundUp(1 / parseFloat(fetchedPrices.BTCEUR), 2);
-        const cachedValue = { price: eurbtc, timestamp: now };
-        setCache("EURBTC", JSON.stringify(cachedValue));
-        prices["EURBTC"] = eurbtc;
-        console.log(`[CALCULATED] EURBTC: ${eurbtc}`);
-      }
-
-      if (fetchedPrices.XMREUR) {
-        const eurxmr = roundUp(1 / parseFloat(fetchedPrices.XMREUR), 2);
-        const cachedValue = { price: eurxmr, timestamp: now };
-        setCache("EURXMR", JSON.stringify(cachedValue));
-        prices["EURXMR"] = eurxmr;
-        console.log(`[CALCULATED] EURXMR: ${eurxmr}`);
+      if (!prices[reversePairKey]) {
+        const reverseRate = calculateExchangeRate(target, base, prices);
+        if (reverseRate !== null) {
+          prices[reversePairKey] = {
+            price: reverseRate,
+            timestamp: now,
+            source: "calculated",
+          };
+          setCache(reversePairKey, JSON.stringify(prices[reversePairKey]));
+        }
       }
     }
 
-    // Возвращаем результат
-    console.log(`[RESPONSE] Returning prices:`, prices);
-    res.json(prices);
+    // Save lastFetchTime in the cache
+    setCache("lastFetchTime", JSON.stringify({ timestamp: now }));
+
+    res.json({ prices, timestamp: now });
   } catch (error) {
     console.error(`[ERROR] Error fetching prices:`, error.message);
     res

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { z } from "zod";
-import iconSepa from "../../assets/images/sepa.svg";
 // import { NavLink } from "react-router-dom";
 import CurrencySelector from "../../components/CurrencySelector/CurrencySelector";
 
@@ -8,7 +7,8 @@ const Main = () => {
   const [selectedButtonBlockSell, setSelectedButtonBlockSell] = useState("All");
   const [selectedButtonBlockBuy, setSelectedButtonBlockBuy] = useState("All");
   const [currencies, setCurrencies] = useState([]);
-  const [selectedCurrency, setSelectedCurrency] = useState(null);
+  const [selectedCurrencySell, setSelectedCurrencySell] = useState(null);
+  const [selectedCurrencyBuy, setSelectedCurrencyBuy] = useState(null);
   const [rates, setRates] = useState(null);
   const [lastActivityTime, setLastActivityTime] = useState(Date.now()); // Последнее время активности
 
@@ -42,6 +42,14 @@ const Main = () => {
         .number({ invalid_type_error: "Sale amount must be a number" })
         .min(500, "Sale amount must be greater than 500")
         .max(150000, "Sale amount must be less than 150 000"),
+      fullName: z
+        .string()
+        .regex(
+          /^[A-Za-z]+ [A-Za-z]+$/,
+          "The cardholder name must be in 'John Doe'"
+        )
+        .min(1, "Enter the cardholder name"),
+      cardNumber: z.number(),
     });
 
     return schema.parse(data);
@@ -57,10 +65,14 @@ const Main = () => {
 
   const [formData, setFormData] = useState({
     saleAmount: "",
+    selectedCurrencySell: "",
     purchaseAmount: "",
+    selectedCurrencyBuy: "",
     email: "",
     tgUsername: "",
     wallet: "",
+    fullName: "",
+    cardNumber: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -69,7 +81,13 @@ const Main = () => {
     const { name, value } = e.target;
 
     // Позволяем ввод только чисел в поле saleAmount
-    if (name === "saleAmount" && !/^\d*\.?\d*$/.test(value)) return;
+    if (
+      (name === "saleAmount" || name === "cardNumber") &&
+      !/^\d*\.?\d*$/.test(value)
+    )
+      return;
+
+    if (name === "fullName" && /^\d*\.?\d*$/.test(value)) return;
 
     setFormData({ ...formData, [name]: value });
 
@@ -86,10 +104,19 @@ const Main = () => {
       const parsedFormData = {
         ...formData,
         saleAmount: Number(formData.saleAmount),
+        purchaseAmount: Number(formData.purchaseAmount),
+        cardNumber: formData.cardNumber ? Number(formData.cardNumber) : null,
+        selectedCurrencyBuy: selectedCurrencyBuy
+          ? selectedCurrencyBuy.network
+          : "",
+        selectedCurrencySell: selectedCurrencySell
+          ? selectedCurrencySell.network
+          : "",
       };
 
+      console.log("Данные для отправки:", parsedFormData);
       // Проверка схемы валидации с текущей сетью
-      validateSchema(parsedFormData, selectedCurrency.network);
+      validateSchema(parsedFormData, selectedCurrencyBuy.network);
 
       setErrors({});
 
@@ -112,10 +139,14 @@ const Main = () => {
 
       setFormData({
         saleAmount: "",
+        selectedCurrencySell: "",
         purchaseAmount: "",
+        selectedCurrencyBuy: "",
         email: "",
         tgUsername: "",
         wallet: "",
+        fullName: "",
+        cardNumber: "",
       });
     } catch (err) {
       if (err.errors) {
@@ -136,8 +167,10 @@ const Main = () => {
         [name]: z
           .string()
           .regex(
-            name === "wallet" ? getWalletRegex(selectedCurrency.network) : /.*/,
-            `Wrong ${selectedCurrency.network} address format`
+            name === "wallet"
+              ? getWalletRegex(selectedCurrencyBuy.network)
+              : /.*/,
+            `Wrong ${selectedCurrencyBuy.network} address format`
           )
           .min(1, "This field is required"),
       });
@@ -168,18 +201,31 @@ const Main = () => {
   const isBothChecked =
     checkboxState.checkboxTerms && checkboxState.checkboxAml;
 
-  const lastFetchTimeRef = useRef(0); // Выносим useRef из useCallback
+  const lastFetchTimeRef = useRef(0);
 
-  //запрос на курс монет
   const fetchRates = useCallback(async () => {
     const now = Date.now();
+    const lastFetchTime = lastFetchTimeRef.current;
 
-    // Пропускаем запрос, если с последнего прошло меньше 15 минут
-    if (now - lastFetchTimeRef.current < 15 * 60 * 1000) {
-      console.log("Пропускаем запрос: данные еще актуальны.");
+    if (lastFetchTime) {
+      const timeSinceLastFetch = now - lastFetchTime;
+
+      const seconds = Math.floor((timeSinceLastFetch / 1000) % 60);
+      const minutes = Math.floor((timeSinceLastFetch / (1000 * 60)) % 60);
+      const hours = Math.floor((timeSinceLastFetch / (1000 * 60 * 60)) % 24);
+
+      console.log(
+        `Time since last fetch: ${hours} hours, ${minutes} minutes, ${seconds} seconds`
+      );
+    }
+
+    const fiveMinutes = 5 * 60 * 1000;
+    if (lastFetchTime && now - lastFetchTime < fiveMinutes) {
+      console.log(
+        `Пропускаем запрос: данные еще актуальны. ${new Date().toLocaleString()}`
+      );
       return;
     }
-    lastFetchTimeRef.current = now; // Обновляем значение
 
     try {
       const response = await fetch("http://localhost:5000/prices/currencies");
@@ -189,15 +235,38 @@ const Main = () => {
       if (!contentType || !contentType.includes("application/json")) {
         throw new Error("Expected JSON, got something else");
       }
+
       const data = JSON.parse(text);
-      setRates(data);
-      setLastActivityTime(Date.now());
+
+      // Сохраняем время последнего запроса из ответа сервера
+      if (data && data.timestamp) {
+        const formattedTimestamp = new Date(data.timestamp).toLocaleString(
+          "ru-RU",
+          {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          }
+        );
+        console.log(
+          `Updated lastFetchTimeRef from server: ${formattedTimestamp}`
+        );
+        lastFetchTimeRef.current = data.timestamp;
+      } else {
+        lastFetchTimeRef.current = now;
+      }
+
+      setRates(data.prices); // Обновляем состояние с курсами
+      setLastActivityTime(now); // Обновляем время активности
     } catch (error) {
       console.error("Error fetching rates:", error);
     }
   }, []); // Зависимости остаются пустыми
 
-  //рендеринг монет во 2-ой карточке
+  // Рендеринг монет
   useEffect(() => {
     let isMounted = true;
 
@@ -213,7 +282,7 @@ const Main = () => {
           setCurrencies(data);
         }
         if (data.length > 0) {
-          setSelectedCurrency(data[0]);
+          setSelectedCurrencyBuy(data[0]);
         }
       } catch (error) {
         console.error("Ошибка:", error);
@@ -231,29 +300,32 @@ const Main = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchRates();
-    }, 15 * 60 * 1000); // Каждые 15 минут
+    }, 5 * 60 * 1000); // Каждые 5 минут
 
     return () => clearInterval(interval);
   }, [fetchRates]); // Указываем `fetchRates` как зависимость
 
-  const handleCurrencySelect = useCallback((currency) => {
-    setSelectedCurrency(currency);
-
-    // Очистка всех ошибок
+  const handleCurrencySelectSell = (currency) => {
+    setSelectedCurrencySell(currency);
     setErrors({});
-  }, []);
+  };
+
+  const handleCurrencySelectBuy = (currency) => {
+    setSelectedCurrencyBuy(currency);
+    setErrors({});
+  };
 
   const getExchangeRate = () => {
-    if (!rates || !selectedCurrency) {
+    if (!rates || !selectedCurrencyBuy) {
       return null;
     }
 
-    const currencyKey = `EUR${selectedCurrency.network
+    const currencyKey = `EUR${selectedCurrencyBuy.network
       .split(" ")[0]
       .toUpperCase()}`;
 
     const rate = rates[currencyKey];
-    return rate ? `${rate} ${selectedCurrency.network}` : "Курс недоступен";
+    return rate ? `${rate} ${selectedCurrencyBuy.network}` : "Курс недоступен";
   };
 
   useEffect(() => {
@@ -282,6 +354,19 @@ const Main = () => {
         purchaseAmount,
       }));
     }
+  };
+
+  useEffect(() => {
+    if (currencies.length > 0) {
+      const reversedCurrencies = currencies.slice().reverse();
+      setSelectedCurrencySell(reversedCurrencies[0]); // Устанавливаем первый элемент реверсированного массива
+    }
+  }, [currencies]);
+
+  const getFilteredCurrencies = (currencies, selectedCurrency) => {
+    return currencies.filter(
+      (currency) => currency.id !== selectedCurrency?.id
+    );
   };
 
   return (
@@ -313,7 +398,7 @@ const Main = () => {
                       >
                         All
                       </button>
-                      <button
+                      {/* <button
                         type="button"
                         onClick={() => handleClickBlockSell("Banks")}
                         className={`text-custom-main-text rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium  shadow-custom-button-tab
@@ -325,7 +410,7 @@ const Main = () => {
                            hover:bg-custom-bg-tab-button hover:outline hover:outline-custom-border-tab-button hover:shadow-none`}
                       >
                         Banks
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                   <div className="flex flex-col gap-[15px]">
@@ -338,12 +423,14 @@ const Main = () => {
                         type="button"
                         className="rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab bg-custom-bg-card border-custom-border-tab-button border-2 text-custom-main-text"
                       >
-                        EUR
+                        {selectedCurrencySell
+                          ? selectedCurrencySell.network
+                          : ""}
                       </button>
                     </div>
                   </div>
                 </div>
-                <div className="opacity-100 grid grid-cols-3 gap-[4px] sm:gap-[14px] p-[10px] mt-[-10px] ml-[-10px] max-h-[450px] h-[130px] overflow-y-auto transition-height duration-300 ease-in-out sm:grid-cols-[repeat(5,1fr)] lg:h-[130px] lg:grid-cols-[repeat(6,1fr)]">
+                {/* <div className="opacity-100 grid grid-cols-3 gap-[4px] sm:gap-[14px] p-[10px] mt-[-10px] ml-[-10px] max-h-[450px] h-[130px] overflow-y-auto transition-height duration-300 ease-in-out sm:grid-cols-[repeat(5,1fr)] lg:h-[130px] lg:grid-cols-[repeat(6,1fr)]">
                   <div className="min-w-[100px max-w-[110px] w-auto sm:w-[120px] h-[110px] flex flex-col gap-[8px] p-[9px] justify-center items-center shadow-custom-button-currencie border-2 rounded-[8px] border-custom-border-tab-button">
                     <div className="w-[35px] p-[2px]">
                       <img src={iconSepa} alt="SEPA" />
@@ -357,7 +444,15 @@ const Main = () => {
                       </h5>
                     </div>
                   </div>
-                </div>
+                </div> */}
+                <CurrencySelector
+                  currencies={getFilteredCurrencies(
+                    currencies,
+                    selectedCurrencyBuy
+                  ).reverse()}
+                  onCurrencySelect={handleCurrencySelectSell}
+                  selectedCurrency={selectedCurrencySell}
+                />
               </div>
             </div>
 
@@ -385,7 +480,7 @@ const Main = () => {
                       >
                         All
                       </button>
-                      <button
+                      {/* <button
                         type="button"
                         onClick={() => handleClickBlockBuy("Crypto")}
                         className={`text-custom-main-text rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium shadow-custom-button-tab
@@ -397,7 +492,7 @@ const Main = () => {
                           hover:outline hover:outline-custom-border-tab-button hover:shadow-none`}
                       >
                         Crypto
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                   <div className="flex flex-col gap-[15px]">
@@ -410,15 +505,19 @@ const Main = () => {
                         type="button"
                         className="rounded-[10px] px-3 py-1 text-[0.8125rem] leading-[1.75] font-medium transition-all shadow-custom-button-tab bg-custom-bg-card border-custom-border-tab-button border-2 text-custom-main-text"
                       >
-                        {selectedCurrency ? selectedCurrency.network : ""}
+                        {selectedCurrencyBuy ? selectedCurrencyBuy.network : ""}
                       </button>
                     </div>
                   </div>
                 </div>
               </div>
               <CurrencySelector
-                currencies={currencies}
-                onCurrencySelect={handleCurrencySelect}
+                currencies={getFilteredCurrencies(
+                  currencies,
+                  selectedCurrencySell
+                )}
+                onCurrencySelect={handleCurrencySelectBuy}
+                selectedCurrency={selectedCurrencyBuy}
               />
             </div>
 
@@ -429,7 +528,8 @@ const Main = () => {
               <div className="grid gap-[16px] grid-cols-1 sm:grid-cols-2">
                 <div className="flex flex-col ">
                   <h3 className="text-custom-main-text text-[16px] leading-[1.06] font-semibold pb-5">
-                    Sale amount SEPA
+                    Sale amount{" "}
+                    {selectedCurrencySell ? selectedCurrencySell.name : ""}
                   </h3>
                   <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-white h-[60px rounded-[8px] overflow-hidden justify-between">
                     <input
@@ -443,7 +543,9 @@ const Main = () => {
                     />
                     <div className="pr-4">
                       <span className="text-[#b6b6b6] font-normal text-[14px]">
-                        EUR
+                        {selectedCurrencySell
+                          ? selectedCurrencySell.network
+                          : ""}
                       </span>
                     </div>
                   </div>
@@ -455,7 +557,8 @@ const Main = () => {
                 </div>
                 <div className="flex flex-col gap-[20px]">
                   <h3 className="text-custom-main-text text-[16px] leading-[1.06] font-semibold">
-                    Purchase amount Tether
+                    Purchase amount{" "}
+                    {selectedCurrencyBuy ? selectedCurrencyBuy.name : ""}
                   </h3>
                   <div className="font-normal text-[14px] bg-white leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] h-[60px rounded-[8px] overflow-hidden justify-between">
                     <input
@@ -469,7 +572,7 @@ const Main = () => {
                     />
                     <div className="pr-4">
                       <span className="text-[#b6b6b6] font-normal text-[14px]">
-                        {selectedCurrency ? selectedCurrency.network : ""}
+                        {selectedCurrencyBuy ? selectedCurrencyBuy.network : ""}
                       </span>
                     </div>
                   </div>
@@ -478,7 +581,8 @@ const Main = () => {
 
               <div className="grid gap-[20px] grid-cols-1">
                 <h3 className="text-custom-main-text text-[16px] leading-[1.06] font-semibold">
-                  Your details Tether
+                  Your details{" "}
+                  {selectedCurrencyBuy ? selectedCurrencyBuy.name : ""}
                 </h3>
                 <div className="grid gap-[16px] grid-cols-1 sm:grid-cols-2">
                   <div className="flex flex-col">
@@ -519,26 +623,67 @@ const Main = () => {
                     )}
                   </div>
 
-                  <div className="flex flex-col">
-                    <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-custom-bg-card h-[60px rounded-[8px] overflow-hidden justify-between">
-                      <input
-                        name="wallet"
-                        className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
-                        placeholder={`${
-                          selectedCurrency ? selectedCurrency.network : ""
-                        } address`}
-                        type="text"
-                        value={formData.wallet}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
+                  {selectedCurrencyBuy?.type === "crypto" ? (
+                    <div className="flex flex-col">
+                      <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-custom-bg-card h-[60px rounded-[8px] overflow-hidden justify-between">
+                        <input
+                          name="wallet"
+                          className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
+                          placeholder={`${
+                            selectedCurrencyBuy
+                              ? selectedCurrencyBuy.network
+                              : ""
+                          } address`}
+                          type="text"
+                          value={formData.wallet}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        />
+                      </div>
+                      {errors.wallet && (
+                        <p className="text-custom-text-error leading-[1.4] text-[12px] font-medium pt-1">
+                          {errors.wallet}
+                        </p>
+                      )}
                     </div>
-                    {errors.wallet && (
-                      <p className="text-custom-text-error leading-[1.4] text-[12px] font-medium pt-1">
-                        {errors.wallet}
-                      </p>
-                    )}
-                  </div>
+                  ) : (
+                    <>
+                      <div className="flex flex-col">
+                        <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-custom-bg-card h-[60px] rounded-[8px] overflow-hidden justify-between">
+                          <input
+                            name="fullName"
+                            className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
+                            placeholder={`Recepient's full name`}
+                            type="text"
+                            value={formData.fullName}
+                            onChange={handleChange}
+                          />
+                        </div>
+                        {errors.fullName && (
+                          <p className="text-custom-text-error leading-[1.4] text-[12px] font-medium pt-1">
+                            {errors.fullName}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex flex-col">
+                        <div className="font-normal text-[14px] leading-[1.4375em] text-[rgba(0,0,0,0.87)] box-border cursor-text inline-flex items-center relative shadow-[rgba(91,91,91,0.09)_0px_2px_5px,rgba(91,91,91,0.11)_0px_2px_5px_0px] bg-custom-bg-card h-[60px] rounded-[8px] overflow-hidden justify-between">
+                          <input
+                            name="cardNumber"
+                            className="text-[16px] h-full w-full p-[20.5px_5px_20.5px_20px] leading-[24px] font-normal focus:outline-none"
+                            placeholder={`Card number`}
+                            type="text"
+                            value={formData.cardNumber}
+                            onChange={handleChange}
+                          />
+                        </div>
+                        {errors.cardNumber && (
+                          <p className="text-custom-text-error leading-[1.4] text-[12px] font-medium pt-1">
+                            {errors.cardNumber}
+                          </p>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -549,7 +694,7 @@ const Main = () => {
               </span>
               <p className="font-normal text-[32px] leading-[1.06]  w-fit m-0">
                 {formData.purchaseAmount || "0"}{" "}
-                {selectedCurrency ? selectedCurrency.network : ""}
+                {selectedCurrencyBuy ? selectedCurrencyBuy.network : ""}
               </p>
               <div className="mt-[23px] grid sm:grid-cols-4 lg:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-[7px]">
@@ -565,8 +710,8 @@ const Main = () => {
                     Reserve:
                   </span>
                   <span className="font-bold text-[12px] leading-[1.2] ">
-                    {selectedCurrency ? selectedCurrency.reserve : ""}{" "}
-                    {selectedCurrency ? selectedCurrency.network : ""}
+                    {selectedCurrencyBuy ? selectedCurrencyBuy.reserve : ""}{" "}
+                    {selectedCurrencyBuy ? selectedCurrencyBuy.network : ""}
                   </span>
                 </div>
                 <div className="flex flex-col  gap-[7px]">
@@ -574,7 +719,8 @@ const Main = () => {
                     Min amount:
                   </span>
                   <span className="font-bold text-[12px] leading-[1.2] ">
-                    {selectedCurrency ? selectedCurrency.minAmount : ""} EUR
+                    {selectedCurrencyBuy ? selectedCurrencyBuy.minAmount : ""}{" "}
+                    EUR
                   </span>
                 </div>
                 <div className="flex flex-col gap-[7px]">
@@ -582,7 +728,8 @@ const Main = () => {
                     Max amount:
                   </span>
                   <span className="font-bold text-[12px] leading-[1.2] ">
-                    {selectedCurrency ? selectedCurrency.maxAmount : ""} EUR
+                    {selectedCurrencyBuy ? selectedCurrencyBuy.maxAmount : ""}{" "}
+                    EUR
                   </span>
                 </div>
               </div>

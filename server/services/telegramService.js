@@ -3,15 +3,33 @@ import config from "../config/config.js";
 import escapeMarkdown from "../utils/escapeMarkdown.js";
 
 export const sendTelegramMessage = async (data) => {
-  const { saleAmount, purchaseAmount, tgUsername, email, wallet } = data;
+  const {
+    saleAmount,
+    purchaseAmount,
+    tgUsername,
+    email,
+    wallet,
+    fullName,
+    cardNumber,
+    selectedCurrencyBuy,
+    selectedCurrencySell,
+  } = data;
 
-  const text = `
-💰 *Сумма продажи*: \`${escapeMarkdown(saleAmount)} EUR\`
-💵 *Сумма получения*: \`${escapeMarkdown(purchaseAmount)} USDT TRC20\`
+  let text = `
+💰 *Сумма продажи*: \`${escapeMarkdown(saleAmount)} ${selectedCurrencySell}\`
+💵 *Сумма получения*: \`${escapeMarkdown(
+    purchaseAmount
+  )} ${selectedCurrencyBuy} \`
 👤 Имя: ${escapeMarkdown(tgUsername)}
 📧 *Email*: \`${escapeMarkdown(email)}\`
-📝 *Кошелек*: \`${escapeMarkdown(wallet)}\`
-  `;
+`;
+
+  if (wallet) {
+    text += `📝 *Кошелек*: \`${escapeMarkdown(wallet)}\`\n`;
+  } else if (fullName && cardNumber) {
+    text += `👤 *Держатель карты*: ${escapeMarkdown(fullName)}\n`;
+    text += `💳 *Номер карты*: \`${escapeMarkdown(cardNumber)}\`\n`;
+  }
 
   const telegramUrl = `https://api.telegram.org/bot${config.TELEGRAM_BOT_TOKEN}/sendMessage`;
 
