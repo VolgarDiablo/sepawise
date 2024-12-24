@@ -10,39 +10,24 @@ const roundUp = (value, significantDigits) => {
   return Math.ceil(value * multiplier) / multiplier;
 };
 
-const calculateExchangeRate = (baseCurrency, targetCurrency, prices) => {
-  const baseToUSD = prices[`${baseCurrency.toUpperCase()}USD`]?.price;
-  const targetToUSD = prices[`${targetCurrency.toUpperCase()}USD`]?.price;
-
-  if (!baseToUSD || !targetToUSD) {
-    console.warn(
-      `Missing price data for ${baseCurrency} or ${targetCurrency} relative to USD.`
-    );
-    return null;
-  }
-
-  return roundUp(baseToUSD / targetToUSD, 6);
-};
-
 export const getCurrencyPrices = async (req, res) => {
   try {
     const prices = {};
     const now = Date.now();
 
     // Check lastFetchTime in the cache
-    const lastFetchTime = getCache("lastFetchTime");
-    if (lastFetchTime) {
-      const lastTimestamp = JSON.parse(lastFetchTime).timestamp;
-      if (now - lastTimestamp < 5 * 60 * 1000) {
+    if (cache.has("lastFetchTime")) {
+      const lastFetchTime = JSON.parse(getCache("lastFetchTime"));
+      if (now - lastFetchTime.timestamp < 5 * 60 * 1000) {
         console.log(
           `Data is still fresh. Last fetched at ${new Date(
-            lastTimestamp
+            lastFetchTime.timestamp
           ).toLocaleString()}`
         );
 
         // Return cached data
         const cachedPrices = {};
-        const allCachedKeys = cache.keys(); // Get all cached keys
+        const allCachedKeys = cache.keys();
         for (const key of allCachedKeys) {
           if (key !== "lastFetchTime") {
             const value = getCache(key);
@@ -54,9 +39,9 @@ export const getCurrencyPrices = async (req, res) => {
 
         res.json({
           prices: cachedPrices,
-          timestamp: lastTimestamp,
+          timestamp: lastFetchTime.timestamp,
         });
-        return; // Exit if data is fresh
+        return;
       }
     }
 
@@ -67,9 +52,55 @@ export const getCurrencyPrices = async (req, res) => {
       throw new Error("Fetched prices are undefined");
     }
 
+    const calculateInversePair = (key, inverseKey) => {
+      if (prices[key]?.price) {
+        const rate = roundUp(1 / prices[key].price, 6);
+        const inverseValue = {
+          price: rate,
+          timestamp: now,
+          source: "calculated",
+        };
+        setCache(inverseKey, JSON.stringify(inverseValue));
+        prices[inverseKey] = inverseValue;
+      }
+    };
+
+    // Calculate additional pairs
+    const calculatePair = (baseKey, targetKey, pairKey) => {
+      if (prices[baseKey]?.price && prices[targetKey]?.price) {
+        const rate = roundUp(
+          prices[baseKey].price / prices[targetKey].price,
+          6
+        );
+        const pairValue = {
+          price: rate,
+          timestamp: now,
+          source: "calculated",
+        };
+        setCache(pairKey, JSON.stringify(pairValue));
+        prices[pairKey] = pairValue;
+      }
+    };
+
     // Save fetched prices into the cache
     for (const [currency, data] of Object.entries(fetchedPrices)) {
-      if (currency.toLowerCase() === "tether") continue; // Skip Tether
+      if (currency.toUpperCase() === "TETHER") {
+        const tetherFixedUSD = { price: 1, timestamp: now, source: "fixed" };
+        setCache("TETHERUSD", JSON.stringify(tetherFixedUSD));
+        prices["TETHERUSD"] = tetherFixedUSD;
+
+        if (data.eur) {
+          const tetherEur = roundUp(data.eur, 6);
+          const tetherFixedEUR = {
+            price: tetherEur,
+            timestamp: now,
+            source: "adjusted",
+          };
+          setCache("TETHEREUR", JSON.stringify(tetherFixedEUR));
+          prices["TETHEREUR"] = tetherFixedEUR;
+        }
+        continue;
+      }
 
       if (data.usd) {
         const usdPrice = roundUp(data.usd, 6);
@@ -81,7 +112,16 @@ export const getCurrencyPrices = async (req, res) => {
         };
         setCache(cacheKey, JSON.stringify(cachedValue));
         prices[cacheKey] = cachedValue;
+
+        // Calculate inverse pairs
+        if (currency.toUpperCase() === "MONERO") {
+          calculateInversePair(cacheKey, "USDMONERO");
+        }
+        if (currency.toUpperCase() === "BITCOIN") {
+          calculateInversePair(cacheKey, "USDBITCOIN");
+        }
       }
+
       if (data.eur) {
         const eurPrice = roundUp(data.eur, 6);
         const cacheKey = `${currency.toUpperCase()}EUR`;
@@ -95,47 +135,38 @@ export const getCurrencyPrices = async (req, res) => {
       }
     }
 
-    // Set fixed value for TETHERUSD
-    if (!prices["TETHERUSD"]) {
-      const tetherFixed = { price: 1, timestamp: now, source: "fixed" };
-      setCache("TETHERUSD", JSON.stringify(tetherFixed));
-      prices["TETHERUSD"] = tetherFixed;
+    // Fixed pairs
+    prices["USDUSD"] = { price: 1, timestamp: now, source: "fixed" };
+    setCache("USDUSD", JSON.stringify(prices["USDUSD"]));
+
+    if (prices["TETHEREUR"]?.price) {
+      const eurToUsdRate = roundUp(1 / prices["TETHEREUR"].price, 6);
+      prices["EURUSD"] = {
+        price: eurToUsdRate,
+        timestamp: now,
+        source: "calculated",
+      };
+      setCache("EURUSD", JSON.stringify(prices["EURUSD"]));
+
+      prices["USDEUR"] = { ...prices["TETHEREUR"] };
+      setCache("USDEUR", JSON.stringify(prices["USDEUR"]));
     }
 
-    // Calculate missing pairs
-    const currencyPairs = [
-      ["bitcoin", "monero"],
-      ["monero", "bitcoin"],
+    // Cryptocurrency pairs
+    const cryptoPairs = [
+      ["BITCOINUSD", "MONEROUSD", "BITCOINMONERO"], // Курс Bitcoin к Monero
+      ["MONEROUSD", "BITCOINUSD", "MONEROBITCOIN"], // Курс Monero к Bitcoin
+      ["BITCOINUSD", "USDTETHER", "USDBITCOIN"], // Курс USD к Bitcoin
+      ["MONEROUSD", "USDTETHER", "USDMONERO"], // Курс USD к Monero
+      ["BITCOINEUR", "EURTETHER", "EURBITCOIN"], // Курс EUR к Bitcoin
+      ["MONEROEUR", "EURTETHER", "EURMONERO"], // Курс EUR к Monero
+      ["USDEUR", "MONEROEUR", "EURMONERO"], // Прямой расчет EUR к Monero
+      ["USDEUR", "BITCOINEUR", "EURBITCOIN"], // Прямой расчет EUR к Bitcoin
     ];
 
-    for (const [base, target] of currencyPairs) {
-      const pairKey = `${base.toUpperCase()}${target.toUpperCase()}`;
-      const reversePairKey = `${target.toUpperCase()}${base.toUpperCase()}`;
-
-      if (!prices[pairKey]) {
-        const rate = calculateExchangeRate(base, target, prices);
-        if (rate !== null) {
-          prices[pairKey] = {
-            price: rate,
-            timestamp: now,
-            source: "calculated",
-          };
-          setCache(pairKey, JSON.stringify(prices[pairKey]));
-        }
-      }
-
-      if (!prices[reversePairKey]) {
-        const reverseRate = calculateExchangeRate(target, base, prices);
-        if (reverseRate !== null) {
-          prices[reversePairKey] = {
-            price: reverseRate,
-            timestamp: now,
-            source: "calculated",
-          };
-          setCache(reversePairKey, JSON.stringify(prices[reversePairKey]));
-        }
-      }
-    }
+    cryptoPairs.forEach(([base, target, pair]) => {
+      calculatePair(base, target, pair);
+    });
 
     // Save lastFetchTime in the cache
     setCache("lastFetchTime", JSON.stringify({ timestamp: now }));

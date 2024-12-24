@@ -1,6 +1,8 @@
 import { sendTelegramMessage } from "../services/telegramService.js";
 
 export const sendToTelegram = async (req, res) => {
+  console.log("Получены данные на сервере:", req.body);
+
   try {
     const {
       saleAmount,
@@ -17,7 +19,12 @@ export const sendToTelegram = async (req, res) => {
     console.log("Получены данные:", req.body);
 
     // Проверяем, что обязательные поля заполнены
-    if (!saleAmount || !purchaseAmount || !email || !tgUsername) {
+    if (
+      saleAmount === undefined ||
+      purchaseAmount === undefined ||
+      !email ||
+      !tgUsername
+    ) {
       return res
         .status(400)
         .json({ error: "Все поля обязательны для заполнения" });

@@ -14,11 +14,6 @@ export const setCache = (key, value) => {
 export const getCache = (key) => {
   try {
     const value = cache.get(key); // Получаем значение из кэша
-    if (value) {
-      console.log(`[CACHE-HIT] ${key}: ${JSON.stringify(value)}`);
-    } else {
-      console.log(`[CACHE-MISS] ${key}`);
-    }
     return value;
   } catch (err) {
     console.error(`[CACHE-ERROR] Error getting cache for ${key}:`, err.message);

@@ -204,27 +204,27 @@ const Main = () => {
   const lastFetchTimeRef = useRef(0);
 
   const fetchRates = useCallback(async () => {
-    const now = Date.now();
-    const lastFetchTime = lastFetchTimeRef.current;
+    const now = Date.now(); // Текущее время в миллисекундах
+    const lastFetchTime = lastFetchTimeRef.current; // Последнее сохраненное время
 
     if (lastFetchTime) {
-      const timeSinceLastFetch = now - lastFetchTime;
+      const timeSinceLastFetch = now - lastFetchTime; // Разница в миллисекундах
 
       const seconds = Math.floor((timeSinceLastFetch / 1000) % 60);
       const minutes = Math.floor((timeSinceLastFetch / (1000 * 60)) % 60);
-      const hours = Math.floor((timeSinceLastFetch / (1000 * 60 * 60)) % 24);
+      const hours = Math.floor(timeSinceLastFetch / (1000 * 60 * 60));
 
       console.log(
-        `Time since last fetch: ${hours} hours, ${minutes} minutes, ${seconds} seconds`
+        `Time since last fetch: ${hours} hours, ${minutes} minutes, ${seconds} seconds (${timeSinceLastFetch} ms)`
       );
-    }
 
-    const fiveMinutes = 5 * 60 * 1000;
-    if (lastFetchTime && now - lastFetchTime < fiveMinutes) {
-      console.log(
-        `Пропускаем запрос: данные еще актуальны. ${new Date().toLocaleString()}`
-      );
-      return;
+      const fiveMinutes = 5 * 60 * 1000; // 5 минут в миллисекундах
+      if (timeSinceLastFetch < fiveMinutes) {
+        console.log(
+          `Пропускаем запрос: данные еще актуальны. ${new Date().toLocaleString()}`
+        );
+        return; // Пропускаем запрос, если с последнего прошло меньше 5 минут
+      }
     }
 
     try {
@@ -240,23 +240,14 @@ const Main = () => {
 
       // Сохраняем время последнего запроса из ответа сервера
       if (data && data.timestamp) {
-        const formattedTimestamp = new Date(data.timestamp).toLocaleString(
-          "ru-RU",
-          {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          }
-        );
+        lastFetchTimeRef.current = new Date(data.timestamp).getTime(); // Сохраняем время из сервера
         console.log(
-          `Updated lastFetchTimeRef from server: ${formattedTimestamp}`
+          `Updated lastFetchTimeRef from server: ${new Date(
+            lastFetchTimeRef.current
+          ).toLocaleString()}`
         );
-        lastFetchTimeRef.current = data.timestamp;
       } else {
-        lastFetchTimeRef.current = now;
+        lastFetchTimeRef.current = now; // Используем локальное время
       }
 
       setRates(data.prices); // Обновляем состояние с курсами
@@ -298,34 +289,77 @@ const Main = () => {
   }, [fetchRates]); // Указываем `fetchRates` как зависимость
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      fetchRates();
-    }, 5 * 60 * 1000); // Каждые 5 минут
+    let timer;
 
-    return () => clearInterval(interval);
-  }, [fetchRates]); // Указываем `fetchRates` как зависимость
+    const scheduleNextFetch = () => {
+      timer = setTimeout(() => {
+        fetchRates().finally(scheduleNextFetch); // Запрос + планирование следующего
+      }, 5 * 60 * 1000); // 5 минут в миллисекундах
+    };
+
+    scheduleNextFetch();
+
+    return () => clearTimeout(timer); // Очищаем таймер при размонтировании
+  }, [fetchRates]);
 
   const handleCurrencySelectSell = (currency) => {
     setSelectedCurrencySell(currency);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      saleAmount: "",
+      purchaseAmount: "",
+    }));
     setErrors({});
   };
 
   const handleCurrencySelectBuy = (currency) => {
     setSelectedCurrencyBuy(currency);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      saleAmount: "",
+      purchaseAmount: "",
+    }));
     setErrors({});
   };
 
   const getExchangeRate = () => {
-    if (!rates || !selectedCurrencyBuy) {
-      return null;
+    if (!rates || !selectedCurrencySell || !selectedCurrencyBuy) {
+      return "Курс недоступен";
     }
 
-    const currencyKey = `EUR${selectedCurrencyBuy.network
-      .split(" ")[0]
-      .toUpperCase()}`;
+    const sellCurrency = selectedCurrencySell.name.split(" ")[0].toUpperCase();
+    const buyCurrency = selectedCurrencyBuy.name.split(" ")[0].toUpperCase();
 
-    const rate = rates[currencyKey];
-    return rate ? `${rate} ${selectedCurrencyBuy.network}` : "Курс недоступен";
+    const sellKey =
+      sellCurrency === "WIRE"
+        ? "USD"
+        : sellCurrency === "SEPA"
+        ? "EUR"
+        : sellCurrency === "TETHER"
+        ? "USD"
+        : sellCurrency;
+
+    const buyKey =
+      buyCurrency === "WIRE"
+        ? "USD"
+        : buyCurrency === "SEPA"
+        ? "EUR"
+        : buyCurrency === "TETHER"
+        ? "USD"
+        : buyCurrency;
+
+    // Формируем ключ для пары
+    const pairKey = `${sellKey}${buyKey}`;
+
+    // Проверяем наличие курса для пары
+    const pairRate = rates[pairKey]?.price;
+
+    if (!pairRate) {
+      return "Курс недоступен";
+    }
+
+    // Возвращаем курс
+    return `1 ${selectedCurrencySell.network} = ${pairRate} ${selectedCurrencyBuy.network}`;
   };
 
   useEffect(() => {
@@ -702,7 +736,7 @@ const Main = () => {
                     Rate:
                   </span>
                   <span className="font-bold text-[12px] leading-[1.2] ">
-                    1 EUR = {getExchangeRate()}
+                    {getExchangeRate()}
                   </span>
                 </div>
                 <div className="flex flex-col gap-[7px]">
@@ -720,7 +754,7 @@ const Main = () => {
                   </span>
                   <span className="font-bold text-[12px] leading-[1.2] ">
                     {selectedCurrencyBuy ? selectedCurrencyBuy.minAmount : ""}{" "}
-                    EUR
+                    {selectedCurrencySell ? selectedCurrencySell.network : ""}{" "}
                   </span>
                 </div>
                 <div className="flex flex-col gap-[7px]">
@@ -729,7 +763,7 @@ const Main = () => {
                   </span>
                   <span className="font-bold text-[12px] leading-[1.2] ">
                     {selectedCurrencyBuy ? selectedCurrencyBuy.maxAmount : ""}{" "}
-                    EUR
+                    {selectedCurrencySell ? selectedCurrencySell.network : ""}{" "}
                   </span>
                 </div>
               </div>

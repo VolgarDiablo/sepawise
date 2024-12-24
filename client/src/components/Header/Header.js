@@ -96,20 +96,20 @@ const Header = () => {
               className="text-white"
             >
               <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
+                fillRule="evenodd"
+                clipRule="evenodd"
                 d="M15.3032 7.55467C15.5367 10.731 13.173 13.5047 9.9999 13.778C6.82679 13.5047 4.46313 10.731 4.69657 7.55467C4.46408 4.37901 6.82749 1.60635 9.9999 1.33301C13.1723 1.60635 15.5357 4.37901 15.3032 7.55467Z"
                 stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               ></path>
               <path
                 d="M4.14319 15.333C-1.70848 17.2697 3.85652 24.6663 9.99985 24.6663C16.1432 24.6663 21.7082 17.2697 15.8565 15.333"
                 stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               ></path>
             </svg>
           </button>

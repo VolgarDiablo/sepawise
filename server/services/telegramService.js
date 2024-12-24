@@ -1,7 +1,3 @@
-import fetch from "node-fetch";
-import config from "../config/config.js";
-import escapeMarkdown from "../utils/escapeMarkdown.js";
-
 export const sendTelegramMessage = async (data) => {
   const {
     saleAmount,
@@ -19,7 +15,7 @@ export const sendTelegramMessage = async (data) => {
 💰 *Сумма продажи*: \`${escapeMarkdown(saleAmount)} ${selectedCurrencySell}\`
 💵 *Сумма получения*: \`${escapeMarkdown(
     purchaseAmount
-  )} ${selectedCurrencyBuy} \`
+  )} ${selectedCurrencyBuy}\`
 👤 Имя: ${escapeMarkdown(tgUsername)}
 📧 *Email*: \`${escapeMarkdown(email)}\`
 `;
@@ -31,21 +27,31 @@ export const sendTelegramMessage = async (data) => {
     text += `💳 *Номер карты*: \`${escapeMarkdown(cardNumber)}\`\n`;
   }
 
+  console.log("Отправляем сообщение в Telegram:", text);
+
   const telegramUrl = `https://api.telegram.org/bot${config.TELEGRAM_BOT_TOKEN}/sendMessage`;
 
-  const response = await fetch(telegramUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: config.TELEGRAM_CHAT_ID,
-      text,
-      parse_mode: "MarkdownV2",
-    }),
-  });
+  try {
+    const response = await fetch(telegramUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: config.TELEGRAM_CHAT_ID,
+        text,
+        parse_mode: "MarkdownV2",
+      }),
+    });
 
-  if (!response.ok) {
-    throw new Error("Не удалось отправить сообщение в Telegram");
+    const result = await response.json();
+    console.log("Ответ Telegram API:", result);
+
+    if (!response.ok) {
+      throw new Error(`Ошибка Telegram API: ${result.description}`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Ошибка при отправке в Telegram:", error.message);
+    throw error;
   }
-
-  return true;
 };
